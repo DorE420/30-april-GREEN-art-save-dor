@@ -34,3 +34,83 @@
     flex-direction:row-reverse;
     justify-content:space-around;
 }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .plant-catalog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  
+  .plant-category {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: rgba(144, 238, 144, 0.1);
+    border: 2px solid rgba(144, 238, 144, 0.5);
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .plant-category.big {
+    background-color: rgba(144, 238, 144, 0.3);
+  }
+  
+  .plant-category.medium {
+    background-color: rgba(144, 238, 144, 0.2);
+  }
+  
+  .plant-category.small {
+    background-color: rgba(144, 238, 144, 0.1);
+  }
+  
+  .plant-category h2 {
+    margin-bottom: 0.5rem;
+    text-align: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: darkgreen;
+  }
+  
+  .plants {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .plant-card {
+    margin: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border: 2px solid rgba(144, 238, 144, 0.5);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .plant-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .plant-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  .plant-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: darkgreen;
+  }
