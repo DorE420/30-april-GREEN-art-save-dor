@@ -38,7 +38,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  
+  "homepage": "https://proj.ruppin.ac.il/cgroup96/prod/build",
   
   "eslintConfig": {
     "extends": [
