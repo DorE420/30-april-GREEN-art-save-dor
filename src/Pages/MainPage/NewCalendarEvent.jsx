@@ -6,8 +6,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
 
 
-const urlGetInventories = 'http://194.90.158.74/cgroup96/prod/api/inventoryItems/get?timestamp=' + Date.now();
-const urlGetCustomers = 'http://194.90.158.74/cgroup96/prod/api/customers/get';
+const urlGetInventories = 'https://proj.ruppin.ac.il/cgroup96/prod/api/inventoryItems/get?timestamp=' + Date.now();
+const urlGetCustomers = 'https://proj.ruppin.ac.il/cgroup96/prod/api/customers/get';
 const username = 'cgroup96';
 const password = 'your_password';
 
