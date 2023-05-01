@@ -10,6 +10,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import {Menu,MenuHandler,MenuList,MenuItem} from "@material-tailwind/react";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NewVehicleMaintenance from "./NewVehicleMaintenance";
+import UpdateVehicles from "./UpdateVehiclePopUp";
 const url =
   "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/get?timestamp=" +
   Date.now();
@@ -19,7 +20,7 @@ const urldelete = "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/delet
 const username = "cgroup96";
 const password = "your_password";
 const urlmaintencepost="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleAdd/post";
-
+const urlputvehicle="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/put";
 const headers = new Headers();
 headers.append("Authorization", "Basic " + btoa(username + ":" + password));
 
@@ -45,6 +46,8 @@ const Vehicles = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [licenseNumToDelete, setLicenseNumToDelete] = useState(null);   
   const [maintenancePopUp, setMaintenancePopUp] = useState(false);
+  const [updateVehicleVisible, setUpdateVehicleVisible] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null); 
   const refreshData = useCallback(
     () => setDataUpdated(!dataUpdated),
     [dataUpdated]
@@ -74,6 +77,37 @@ const Vehicles = () => {
         console.log("err post=", error);
       });
   }
+
+  function deleteMaintenance(maintenanceId) {
+    const deletemainturl="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleMaintence/delete";
+    fetch(deletemainturl, {
+      method: "DELETE",
+      headers: {
+        ...headers, // Spread the existing headers
+        "Content-Type": "application/json", // Add the 'Content-Type' header
+      },
+      body: JSON.stringify({ maintenance_id: maintenanceId }),
+    })
+      .then((res) => {
+        console.log(maintenanceId);
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
+      .then((result) => {
+        console.log("**************");
+        console.log("delete maintenance result= ", result);
+        console.log("**************");
+        // Refresh data after deleting item
+        refreshData();
+        fetchMaintenanceData(licenseNumToDelete);
+      })
+      .catch((error) => {
+        console.log("err delete=", error);
+      });
+  }
+  
 
 
   function showDeleteConfirmation(licenseNum) {
@@ -105,6 +139,42 @@ const Vehicles = () => {
         console.log("err post=", error);
       });
   }
+
+  function updateVehiclesItem (item, refreshData) {
+    fetch(urlputvehicle, {
+      method: "PUT",
+      headers: {
+        ...headers, // Spread the existing headers
+        "Content-Type": "application/json", // Add the 'Content-Type' header
+      },
+      body: JSON.stringify(item),
+    })
+      .then((res) => {
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
+      .then((result) => {
+        console.log("result= ", result);
+        refreshData();
+      })
+      .catch((error) => {
+        console.log("err post=", error);
+      });
+  }
+ const openUpdateVehiclePopup = (vehicle) => {
+  console.log("openUpdateVehiclePopup called", vehicle);
+  setSelectedVehicle({
+    licensePlateNum: vehicle.licenseNum,
+    vehicleType: vehicle.vehicleType1,
+    vehicleColor: vehicle.vehicleColor1,
+    vehicleOwnership: vehicle.vehicleOwnership1,
+    manufacturingYear: vehicle.manufacturingYear1,
+  });
+  setUpdateVehicleVisible(true);
+};
+
 
   function deleteVehicle(itemId) {
     fetch(urldelete, {
@@ -167,11 +237,18 @@ const Vehicles = () => {
 
   const columnsLeftData = [
     {
+      name: "מספר טיפול",
+      selector: "maintID",
+      right:true,
+      sortable: true,
+      width: "20%",
+    },
+    {
       name: "תאריך ושעה",
       selector: "DateandTime",
       right:true,
       sortable: true,
-      width: "30%",
+      width: "25%",
     },
     {
       name: "שם המוסך",
@@ -199,8 +276,10 @@ const Vehicles = () => {
               <MoreVertIcon/>
             </MenuHandler>
               <MenuList >
-                <MenuItem><EditIcon/></MenuItem>
-                <MenuItem><DeleteIcon/></MenuItem>
+                
+                <MenuItem onClick={() => deleteMaintenance(row.maintID)}>
+              <DeleteIcon />
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
@@ -231,6 +310,7 @@ const Vehicles = () => {
         console.log("Fetched Maintenance Data =", result);
         const updatedMaintenanceData = result.map(item => {
           return {
+            maintID:item.maintenance_id,
             DateandTime: item.maintenance_date,
             GarageName: item.garageName,
             maintanceName: item.maintenance_description,
@@ -266,7 +346,7 @@ const Vehicles = () => {
       width: "15%",
       cell: (row) => (
         <div className="iconsDataTable">
-          <EditIcon onClick={() => ""} />
+          <EditIcon onClick={() => openUpdateVehiclePopup(row)} />
           <DeleteIcon onClick={() => showDeleteConfirmation(row.licenseNum)} />
         </div>
       ),
@@ -333,12 +413,20 @@ const Vehicles = () => {
      }}
     />    
 
-<NewVehicleMaintenance
+  {/* <UpdateVehicles
+   trigger={updateVehicleVisible}
+   setTrigger={setUpdateVehicleVisible}
+    updateVehiclesItem={updateVehiclesItem}
+    
+  /> */}
+    
+
+  <NewVehicleMaintenance
   trigger={maintenancePopUp}
   setTrigger={setMaintenancePopUp}
   addMaintenanceItem={(item) => addMaintenanceItem(item, refreshData)}
   vehicles={datainfo}
-/>
+  />
 
         <div id="vehiclesTable">
           <DataTable

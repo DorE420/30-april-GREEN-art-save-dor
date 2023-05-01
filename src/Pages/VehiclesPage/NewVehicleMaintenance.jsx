@@ -84,7 +84,7 @@ function NewVehicleMaintenance({ trigger, setTrigger, addMaintenanceItem, vehicl
                   <label>תאריך טיפול</label>
                   <input
                     placeholder="Maintenance Date"
-                    type="date"
+                    type="datetime-local"
                     value={maintenanceDate}
                     onChange={maintenanceDateHandler}
                   />
