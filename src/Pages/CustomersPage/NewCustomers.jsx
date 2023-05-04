@@ -52,6 +52,7 @@ function NewCustomers ({trigger, setTrigger, addCustomers, children}) {
         console.log("RepresentiveEmail:" + e.target.value);
     };
 
+    
     const saveHandler = (e) => {
         e.preventDefault();
         const newCustomerInput = {

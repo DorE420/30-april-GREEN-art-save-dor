@@ -4,6 +4,8 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 
 const urlGetInventories = 'https://proj.ruppin.ac.il/cgroup96/prod/api/inventoryItems/get?timestamp=' + Date.now();
@@ -19,15 +21,30 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString("he-IL", options);
 };
 
-const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
+const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children}) => {
 
+  const [eventName, setEventName] = useState("");
+  const [eventStartDate, setEventStartDate] = useState("");
+  const [eventEndDate, setEventEndDate] = useState("");
+  const [eventAddress, setEventAddress] = useState("");
+  const [eventNotes, setEventNotes ] = useState("");
+  const [customerChoose, setCustomerChoose] = useState("");
+  const [itemsEvent, setItemsEvent ] = useState([]);
 
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState("");
-  const [place, setPlace] = useState("");
-  
   const [dataInfoCustomers, setDataInfoCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [dataInfoInventories, setDataInfoInventories] = useState([]);
+
+
+  const [checkedInventories, setcheckedInventories] = useState(false);
+  const [inputValueInventories, setInputValueInventories] = useState('');
+
+
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const [step1Data, setStep1Data] = useState([]);
+  const [step2Data, setStep2Data] = useState('');
+  const [step3Data, setStep3Data] = useState([]);
 
   useEffect(() => {
     fetch(urlGetCustomers, {
@@ -59,7 +76,6 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
     console.log("Err post = ", error);
   });
   },[]);
-  
   useEffect(() => {
     fetch(urlGetInventories, {
       method: 'GET',
@@ -89,8 +105,55 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
     });
   }, []);
 
+
+  const eventNameInput = (e) => {
+    setEventName(e.target.value);
+    console.log("Name : " + e.target.value);
+
+  };
+  const eventStartDateInput = (e) => {
+    setEventStartDate(e.target.value);
+    console.log("Start Date : " + e.target.value);
+  };
+  const eventEndDateInput = (e) => {
+    setEventEndDate(e.target.value);
+    console.log("End Date : " + e.target.value);
+  };
+  const eventAddressInput = (e) => {
+    setEventAddress(e.target.value);
+    console.log("Address : " + e.target.value);
+  };
+  const eventNotesInput = (e) => {
+    setEventNotes(e.target.value);
+    console.log("Notes : " + e.target.value);
+  };
+  const customerChooseInput = (e) => {
+    setCustomerChoose(e.target.value);
+    console.log("Customer Event : " + e.target.value);
+  };
+  const itemsEventInput = (e) => {
+    setItemsEvent(e.target.value);
+    console.log("Item List : " + e.target.value);
+  };
+  const handleCustomerSelection = (customerId) => {
+    setSelectedCustomer(customerId);
+  };
+
+  
+  const handleCheckboxInventoriesChange = (e) => {
+    setcheckedInventories(e.target.checkedInventories);
+    if (!e.target.checkedInventories) {
+      setInputValueInventories('');
+    }
+  };
+  const handleInputInventoriesChange = (e) => {
+    setInputValueInventories(e.target.value);
+  };
+
+
+/*Data for Step2 & Step 3 */
   const columnsCustomers = [
-    {
+    /*{
       name : "",
       selector : "checkcCostumer",
       sortable: false,
@@ -98,8 +161,9 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
       width: '10%',
       cell: ((row) =>
        <input type="checkbox"
-              checked={row.isSelected}/>),
-    },
+              checked={selectedCustomer === row.id}
+              onChange={() => handleCustomerSelection(row.id)}/>),
+    },*/
     {
       name : "שם חברה",
       selector : "costumerName",
@@ -127,19 +191,6 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
   ]
   const reversedColumnsCustomer = [...columnsCustomers].reverse();
 
-
-  const handleRowSelectedCostumers = (rows) => {
-    console.log('Selected Rows:', rows);
-  };
-  const conditionalRowStylesCustomers = [
-    {
-      when: (row) => row.isSelected,
-      style: {
-        backgroundColor: 'rgba(0, 123, 255, 0.2)',
-      },
-    },
-  ];
-
   const columnsInventories =[
     {
       name : "",
@@ -149,7 +200,8 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
       width: '5%',
       cell: ((row) =>
        <input type="checkbox"
-              checked={row.isSelected}/>),
+              checked={checkedInventories}
+              onchange={handleCheckboxInventoriesChange}/>),
     },
     {
       name: "מסד",
@@ -172,7 +224,10 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
       width: '25%',
       cell: ((row) => 
         <input type="text"
-               className="textInputAmount"/>),
+               className="textInputAmount"
+               value={inputValueInventories}
+               onChange={handleInputInventoriesChange}
+               disabled={!checkedInventories}/>),
     },
   ]
   const reversedColumnsInventories = [...columnsInventories].reverse();
@@ -180,27 +235,67 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
 
 
 
-  const [currentStep, setCurrentStep] = useState(1);
+
+
+
+  const handleRowSelectedCostumers = (rows) => {
+    console.log('Selected Rows:', rows);
+  };
+  const conditionalRowStylesCustomers = [
+    {
+      when: (row) => row.isSelected,
+      style: {
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+      },
+    },
+  ];
+
+
+
+
+
+  const handleStep1Next = () => {
+      const step1Data = {
+        eventName,
+        eventStartDate,
+        eventEndDate,
+        eventAddress,
+        eventNotes,
+      };
+    setStep1Data(step1Data);
+    setCurrentStep(prevStep => prevStep + 1);
+  };
+  const handleStep2Next = () => {
+    const step2Data = {
+      customerChoose,
+    };
+    setStep2Data(step2Data);
+    setCurrentStep(prevStep => prevStep + 1);
+  };
+  const handleStep3Submit = () => {
+
+    setStep3Data(itemsEvent);
+
+    const formEventData = {
+      step1Data,
+      step2Data,
+      step3Data,
+    };
+    addEvent(formEventData);
+    setTrigger(false);
+  };
+
+
+
+
   const handleNext = () => {
       setCurrentStep(prevStep => prevStep + 1);
   };
+
   const handlePrevious = () => {
       setCurrentStep(prevStep => prevStep - 1);
   };
 
-
-  const titleChangeHandler = (event) => {
-    setTitle(event.target.value);
-    console.log("Title:" + event.target.value);
-  };
-  const timeChangehandler = (event) => {
-    setTime(event.target.value);
-    console.log("Time:" + event.target.value);
-  };
-  const placeChangeHandler = (event) => {
-    setPlace(event.target.value);
-    console.log("Place:" + event.target.value);
-  };
   const handleSave = (e) => {
     e.preventDefault();
       const newEvents = {
@@ -210,28 +305,25 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
       };
       console.log("*************************");
       console.log(newEvents);
-      onSave(newEvents);
+      addEvent(newEvents);
       setTrigger(false);
-      {/*console.log("New Event" + title, date, time, place);*/}
   };
   const closeForm = () => {
     setTrigger(false);
   };
 
-  return(
+  return trigger ? (
     <div className="popUpEvents">
       <div className="innerPopUpEvents">
 
           <div className="innerEvents1">
             <HighlightOffIcon onClick={closeForm} />
           </div>
-
           <div className="innerEvents2">
             <h1>יצירת אירוע חדש</h1>
           </div>
 
           <div className="innerEvents3">
-
           {currentStep === 1 && (
             <>
               <div className="Step1Main">
@@ -243,48 +335,64 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
                 <div className="Step1MainInner2">
 
                   <div className="divInfoInput">
-                    <input id="eventName"
+                    <label>נא הכנס את שם האירוע</label>
+                    <input id=""
                            type="text"
-                           value={title}
+                           value={eventName}
+                           onChange={eventNameInput}
                            placeholder="שם אירוע"
-                           onChange={titleChangeHandler}
                            />
                   </div>
 
                   <div className="divInfoInput">
+                  <label>נא הכנס זמן תחילת אירוע</label>
                     <input
                       id="time-input"
                       type="time"
-                      value={time}
-                      onChange={timeChangehandler}
+                      value={eventStartDate}
+                      onChange={eventStartDateInput}
                       placeholder="זמן תחילת אירוע"
                     />
                   </div>
 
                   <div className="divInfoInput">
+                  <label>נא הכנס זמן סיום אירוע</label>
                     <input
-                      id="time-input"
+                      id=""
                       type="time"
-                      value={time}
-                      onChange={""}
-                      placeholder="הכנס זמן סיום אירוע"
+                      value={eventEndDate}
+                      onChange={eventEndDateInput}
+                      placeholder="זמן סיום אירוע"
                     />
                   </div>
 
                   <div className="divInfoInput">
+                  <label>נא הכנס את כתובת האירוע</label>
                     <input
-                      id="place-input"
+                      id=""
                       type="text"
-                      value={place}
-                      onChange={placeChangeHandler}
+                      value={eventAddress}
+                      onChange={eventAddressInput}
                       placeholder="כתובת אירוע"
                     />
                   </div>
+
+                  <div className="divInfoInput">
+                  <label>הערות אירוע</label>
+                    <input
+                      id=""
+                      type="text"
+                      value={eventNotes}
+                      onChange={eventNotesInput}
+                      placeholder="הערות"
+                    />
+                  </div>
+                  
                 </div>
               </div>
 
               <div className="Step1Bottum">
-                <ArrowBackIcon onClick={handleNext}/>
+                <ArrowBackIcon onClick={handleStep1Next}/>
               </div>
             </>
           )}
@@ -297,17 +405,21 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
                 </div>
 
                 <div className="Step2MainInner2">
-                  <DataTable columns={reversedColumnsCustomer}
+                  <DataTable id="dataTableCustomers" 
+                             columns={columnsCustomers}
                              data={dataInfoCustomers}
-                             onSelectedRowsChange={handleRowSelectedCostumers}
-                             conditionalRowStyles={conditionalRowStylesCustomers}
-                             className="dataTableCustomers"
+                             selectableRows
+                             selectableRowsSingle
+                             selectableRowSelected={selectedCustomer}
+                             onSelectedRowsChange={({selectedRows}) => {
+                                if (selectedRows.length > 0){setSelectedCustomer(selectedRows[0].id);}
+                                else {setSelectedCustomer(null)};}}
                              fixedHeader/>
                 </div>
               </div>
 
               <div className="Step2Bottum">
-                <ArrowBackIcon onClick={handleNext}/>
+                <ArrowBackIcon onClick={handleStep2Next}/>
                 <ArrowForwardIcon onClick={handlePrevious}/>
               </div>
             </>
@@ -329,7 +441,7 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
             </div>
 
             <div className="Step3Bottum">
-              <Button type="button" onClick={handleSave}>שמירה</Button>
+              <Button type="button" onClick={handleStep3Submit}>שמירה</Button>
               <ArrowForwardIcon onClick={handlePrevious}/>
             </div>
             </>
@@ -337,58 +449,7 @@ const NewCalendarEvent = ({trigger, setTrigger, date, onSave, children}) => {
           </div>
       </div>
     </div>
-  );
+  ) : ("");
 };
 
 export default NewCalendarEvent;
-
-
-
-
-
-{/*          
-            
-
-
-              <label htmlFor="time-input">תאריך ושעת תחילת אירוע</label>
-              <input
-                id="time-input"
-                type="time"
-                value={time}
-                onChange={timeChangehandler}
-                placeholder="הכנס זמן תחילת אירוע"
-              />
-              <br />
-              <label htmlFor="time-input">תאריך ושעת סיום אירוע</label>
-              <input
-                id="time-input"
-                type="time"
-                value={time}
-                onChange={""}
-                placeholder="הכנס זמן סיום אירוע"
-              />
-              <br />
-              <label htmlFor="place-input">מקום:</label>
-              <input
-                id="place-input"
-                type="text"
-                value={place}
-                onChange={placeChangeHandler}
-                placeholder="הכנס מיקום לאירוע"
-              />
-              <br />
-              <label htmlFor="place-input">שם לקוח</label>
-              <input
-                id="place-input"
-                type="select"
-                value={place}
-                onChange={""}
-                placeholder="הכנס מיקום לאירוע"
-              />
-              </div>
-
-              <div className="innerEvents4">
-              </div>
-            
-            
-            { title, date, time, place }*/}

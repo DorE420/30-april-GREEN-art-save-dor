@@ -148,7 +148,8 @@ colgroup{
     height: 90%;
     width: 100%;
     overflow: scroll;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .divInfoInput input{
     font: inherit;
@@ -159,6 +160,11 @@ colgroup{
     max-width: 100%;
     height: 2rem;
     text-align: right;
+}
+.divInfoInput label{
+    text-align: right;
+    background-color: aqua;
+    font-size: 10px;
 }
 
 .Step1Bottum{
@@ -206,9 +212,13 @@ colgroup{
     justify-content:space-between;
     align-items: center;
 }
-.dataTableCustomers{
+#dataTableCustomers{
     padding: 10px;
 }
+#dataTableCustomers .ewhdCu {
+    flex-direction:row-reverse;
+}
+
 
 
 

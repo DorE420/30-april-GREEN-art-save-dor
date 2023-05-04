@@ -4,7 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import NewCalendarEvent from "./NewCalendarEvent";
-import EventList from "./EventList";
 import "./MainPageCss.css";
 import {Menu,MenuHandler,MenuList,MenuItem} from "@material-tailwind/react";
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,53 +12,99 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DataTable from "react-data-table-component";
 
 
+const urlGetEvents = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents/get";
+const urlPostEvent = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents";
+const urlDeleteEvent = "https://your-api-url.com/api/events/delete";
 
-const MainPage = () => {
-  const urlGetEvents = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents/get";
-  const urlPostEvent = "https://your-api-url.com/api/events/post";
-  const urlDeleteEvent = "https://your-api-url.com/api/events/delete";
-  const [eventsUpdated, setEventsUpdated] = useState(false);
-  const username = "your_username";
-  const password = "your_password";
-  const headers = new Headers();
-  headers.append("Authorization", "Basic " + btoa(username + ":" + password));
+const username = "your_username";
+const password = "your_password";
+
+const headers = new Headers();
+headers.append("Authorization", "Basic " + btoa(username + ":" + password));
+
+function addEvent (event,refreshData){
+  fetch(urlPostEvent, {
+    method: 'POST',
+    headers:{
+      ...headers,
+      'Content-Type' : 'application/json'
+    },
+    body: JSON.stringify(event)
+  })
+  .then(res => {
+    console.log('res = ', res);
+    console.log('res.status', res.status);
+    console.log('res.ok', res.ok);
+    return res.json()
+  })
+  .then(result => {
+    console.log("Add Event result = ", result);
+    refreshData();
+  })
+  .catch(error => {
+    console.log("Err post = ", error);
+  });
+};
+
+function MainPage (){
 
   const [dataEventInfo, setDataEventInfo] = useState([]);
   const [dataUpdated, setDataUpdated] = useState(false);
+  const [eventsUpdated, setEventsUpdated] = useState(false);
+  const [addNewEvent, setAddNewEvent] = useState(false);
   const refreshData = useCallback(() => setDataUpdated(!dataUpdated),[dataUpdated]);
 
-  const fetchEvents = () => {
-    fetch(urlGetEvents, {
-      method: "GET",
-      headers: headers,
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("fetched events= ", result);
-        const transformedEvents = result.map((event) => ({
-          id: event.eventSerialNum,
-          title: event.event_name,
-          start: new Date(event.event_startdate), // Convert to Date object
-          end: event.event_enddate ? new Date(event.event_enddate) : null,
-          extendedProps: {
-            event_address: event.event_address,
-            isEventActive: event.isEventActive,
-            event_notes: event.event_notes,
-            employee_id: event.employee_id,
-            clientNumber: event.clientNumber,
-          },
-        }));
-        console.log("transformed events= ", transformedEvents);
-        setEvents(transformedEvents);
-      })
-      .catch((error) => {
-        console.log("error fetching events=", error);
-      });
-  };
-
   useEffect(() => {
-    fetchEvents();
+    fetch(urlGetEvents, {
+      method: 'GET',
+      headers: headers
+    })
+    .then(res => {
+      console.log('res = ', res);
+      console.log('res.status', res.status);
+      console.log('res.ok', res.ok);
+      return res.json()
+    })
+    .then(result => {
+      console.log("fetch Events = ", result);
+      const updatedDatainfo = result.map(st => {
+        return{
+          EventName: st.event_name,
+          DateandTime: st.event_startdate,
+        };
+      });
+      console.log(updatedDatainfo);
+      setDataEventInfo(updatedDatainfo);
+    })
+    .catch(error => {
+      console.log("Err post = ", error);
+    });
   }, [eventsUpdated]);
+
+  function deleteEvent(EventID){
+    fetch(urlDeleteEvent, {
+      method: 'DELETE',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({EventName : EventID})
+    })
+    .then(res => {
+      console.log('Event number is: ', EventID);
+      console.log('res = ', res);
+      console.log('res.status', res.status);
+      console.log('res.ok', res.ok);
+      return res.json()
+    })
+    .then(result => {
+      console.log("Delete Event result = ", result);
+      refreshData();
+    })
+    .catch(error => {
+      console.log("Err delete = ", error);
+    });
+  };
 
   const hebrewCalendar = {
     code: "he",
@@ -95,7 +140,6 @@ const MainPage = () => {
   };
 
 
-
   const columnsLeftData = [
     {
       name: "תאריך ושעה",
@@ -103,6 +147,9 @@ const MainPage = () => {
       right:true,
       sortable: true,
       width: "60%",
+      cell: (row) => (
+        <div>{row.event_startdate}</div>
+      )
     },
     {
       name: "שם אירוע",
@@ -124,43 +171,14 @@ const MainPage = () => {
             </MenuHandler>
               <MenuList >
                 <MenuItem><EditIcon/></MenuItem>
-                <MenuItem><DeleteIcon/></MenuItem>
+                <MenuItem><DeleteIcon onClick={deleteEvent}/></MenuItem>
             </MenuList>
           </Menu>
         </div>
       ),
     },
   ];
-
   const reversedColumns = [...columnsLeftData].reverse();
-
-  useEffect(() => {
-    fetch(urlGetEvents, {
-      method: 'GET',
-      headers: headers
-    })
-    .then(res => {
-      console.log('res = ', res);
-      console.log('res.status', res.status);
-      console.log('res.ok', res.ok);
-      return res.json()
-    })
-      .then(result => {
-        console.log("fetch event = ", result);
-        const updatedDatainfo = result.map(st => {
-          return{
-            DateandTime: st.event_startdate,
-            EventName: st.event_name,
-          };
-        });
-        console.log(updatedDatainfo);
-        setDataEventInfo(updatedDatainfo);
-      })
-      .catch(error => {
-        console.log("Err post = ", error);
-      });
-    }, [dataUpdated]);
-
 
 
 
@@ -176,21 +194,16 @@ const MainPage = () => {
     );
   };
 
-  const addEvent = (event) => {
-    setEvents((prevEvents) => [...prevEvents, event]);
-  };
-
   const [events, setEvents] = useState([]);
-  const [isAddingEvent, setIsAddingEvent] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateSelect = (selectInfo) => {
     setSelectedDate(selectInfo.startStr);
-    setIsAddingEvent(true);
+
   };
   const handleSave = ({ title, date }) => {
     addEvent({ title, date });
-    setIsAddingEvent(false);
+
   };
 
   return (
@@ -198,14 +211,17 @@ const MainPage = () => {
       <div id="headerMainPage">
         <button
           className="buttonMainPage"
-          onClick={() => setIsAddingEvent(true)}
-        >
-          הוספת אירוע
+          onClick={() => setAddNewEvent(true)}>הוספת אירוע
         </button>
         <h1>לוח אירועים</h1>
       </div>
 
       <div id="innerMainPage">
+
+        <NewCalendarEvent trigger={addNewEvent}
+                          setTrigger={setAddNewEvent}
+                          addEvent={(item) => addEvent(item, refreshData)}/>
+
         <div className="calanderRight">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -219,17 +235,7 @@ const MainPage = () => {
             events={events}
             selectable={true}
             select={handleDateSelect}
-            eventContent={renderEventContent}
-          />
-          {isAddingEvent && (
-            <NewCalendarEvent
-              trigger={isAddingEvent}
-              setTrigger={setIsAddingEvent}
-              date={selectedDate}
-              onSave={handleSave}
-            />
-          )}
-          {console.log("Current events state: ", events)}
+            eventContent={renderEventContent}/>
         </div>
 
         <div className="dataListLeft">
@@ -238,10 +244,6 @@ const MainPage = () => {
             <DataTable columns={reversedColumns}
                        data={dataEventInfo}/>
           </div>
-
-          {/*<EventList lassName="headerDataListLeft" events={events} />*/}
-          
-
         </div>
       </div>
     </div>
