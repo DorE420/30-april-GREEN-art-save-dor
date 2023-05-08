@@ -13,7 +13,7 @@ import DataTable from "react-data-table-component";
 
 
 const urlGetEvents = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents/get";
-const urlPostEvent = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents";
+const urlPostEvent = "https://proj.ruppin.ac.il/cgroup96/prod/api/GreenEvents/post";
 const urlDeleteEvent = "https://your-api-url.com/api/events/delete";
 
 const username = "your_username";
@@ -32,6 +32,7 @@ function addEvent (event,refreshData){
     body: JSON.stringify(event)
   })
   .then(res => {
+    console.log(event);
     console.log('res = ', res);
     console.log('res.status', res.status);
     console.log('res.ok', res.ok);

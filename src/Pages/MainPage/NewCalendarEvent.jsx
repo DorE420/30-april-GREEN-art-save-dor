@@ -4,7 +4,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
-import DatePicker from 'react-datepicker';
+// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
@@ -23,14 +23,14 @@ const formatDate = (date) => {
 
 const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children}) => {
 
-  const [eventName, setEventName] = useState("");
-  const [eventStartDate, setEventStartDate] = useState("");
-  const [eventEndDate, setEventEndDate] = useState("");
-  const [eventAddress, setEventAddress] = useState("");
-  const [eventNotes, setEventNotes ] = useState("");
+  const [event_name, setEventName] = useState("");
+  const [event_startdate, setEventStartDate] = useState("");
+  const [event_enddate, setEventEndDate] = useState("");
+  const [event_address, setEventAddress] = useState("");
+  const [event_notes, setEventNotes ] = useState("");
   const [customerChoose, setCustomerChoose] = useState("");
   const [itemsEvent, setItemsEvent ] = useState([]);
-
+  const [lastEventSerial, setLastEventSerial] = useState(6);
   const [dataInfoCustomers, setDataInfoCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [dataInfoInventories, setDataInfoInventories] = useState([]);
@@ -256,11 +256,12 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
 
   const handleStep1Next = () => {
       const step1Data = {
-        eventName,
-        eventStartDate,
-        eventEndDate,
-        eventAddress,
-        eventNotes,
+        eventSerialNum: lastEventSerial,
+        event_name,
+        event_startdate,
+        event_enddate,
+        event_address,
+        event_notes,
       };
     setStep1Data(step1Data);
     setCurrentStep(prevStep => prevStep + 1);
@@ -273,15 +274,17 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
     setCurrentStep(prevStep => prevStep + 1);
   };
   const handleStep3Submit = () => {
+    setLastEventSerial(prevSerial => prevSerial + 1);
+    const newEventSerial = lastEventSerial + 1;
 
     setStep3Data(itemsEvent);
 
     const formEventData = {
-      step1Data,
+      step1Data:{...step1Data,eventSerialNum: newEventSerial},
       step2Data,
       step3Data,
     };
-    addEvent(formEventData);
+    addEvent(step1Data);
     setTrigger(false);
   };
 
@@ -296,18 +299,18 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
       setCurrentStep(prevStep => prevStep - 1);
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-      const newEvents = {
-        event_name: title,
-        event_startdate: time,
-        event_address: place,
-      };
-      console.log("*************************");
-      console.log(newEvents);
-      addEvent(newEvents);
-      setTrigger(false);
-  };
+  // const handleSave = (e) => {
+  //   e.preventDefault();
+  //     const newEvents = {
+  //       event_name: title,
+  //       event_startdate: time,
+  //       event_address: place,
+  //     };
+  //     console.log("*************************");
+  //     console.log(newEvents);
+  //     addEvent(newEvents);
+  //     setTrigger(false);
+  // };
   const closeForm = () => {
     setTrigger(false);
   };
@@ -338,7 +341,7 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                     <label>נא הכנס את שם האירוע</label>
                     <input id=""
                            type="text"
-                           value={eventName}
+                           value={event_name}
                            onChange={eventNameInput}
                            placeholder="שם אירוע"
                            />
@@ -349,7 +352,7 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                     <input
                       id="time-input"
                       type="time"
-                      value={eventStartDate}
+                      value={event_startdate}
                       onChange={eventStartDateInput}
                       placeholder="זמן תחילת אירוע"
                     />
@@ -360,7 +363,7 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                     <input
                       id=""
                       type="time"
-                      value={eventEndDate}
+                      value={event_enddate}
                       onChange={eventEndDateInput}
                       placeholder="זמן סיום אירוע"
                     />
@@ -371,7 +374,7 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                     <input
                       id=""
                       type="text"
-                      value={eventAddress}
+                      value={event_address}
                       onChange={eventAddressInput}
                       placeholder="כתובת אירוע"
                     />
@@ -382,7 +385,7 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                     <input
                       id=""
                       type="text"
-                      value={eventNotes}
+                      value={event_notes}
                       onChange={eventNotesInput}
                       placeholder="הערות"
                     />
