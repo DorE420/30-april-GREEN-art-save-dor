@@ -1,277 +1,276 @@
-#mainBodyMainPage{
-    width: 100%;
-    height: 100%;
-    background-color:#f5f5f5 ;    
+#mainBodyMainPage {
+  width: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
 }
-#headerMainPage{
-    height: 10%;
-    padding: 0px 40px 0px 30px;
-    display: flex;
-    align-items:center;
-    justify-content:space-between;
-    border-bottom: 1px solid #5391659f;
-    background-color: #fafafa;
+#headerMainPage {
+  height: 10%;
+  padding: 0px 40px 0px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #5391659f;
+  background-color: #fafafa;
 }
 #headerMainPage h1 {
-    color: black;
-    font-size: 20px;
-    margin: 0;
+  color: black;
+  font-size: 20px;
+  margin: 0;
 }
-#innerMainPage{
-    overflow: scroll;
-    width: 100%;
-    height: 90%;
-    display:flex;
-    flex-direction:row-reverse;
-    justify-content:space-around;
-    align-items: center;
+#innerMainPage {
+  /* overflow: scroll; */
+  width: 100%;
+  height: 90%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  align-items: center;
 }
-.buttonMainPage{
-    background-color:rgb(54, 136, 218);
-    border: 1px rgb(54, 136, 218);
-    line-height: 30px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 10px;
-    text-align: center;
+.buttonMainPage {
+  color: rgb(54, 136, 218);
+  border: 1px solid rgb(54, 136, 218);
+  line-height: 30px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 10px;
+  text-align: center;
 }
-.calanderRight{
-    background-color:white;
-    width: 70%;
-    height: 95%;
-    border-radius: 15px;
-    overflow: scroll;
+.buttonMainPage:hover {
+  background-color: rgb(54, 136, 218);
+  border: 1px solid #fafafa;
+  color: #fafafa;
+  line-height: 30px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 10px;
+  text-align: center;
 }
-.headerCalanderRight{
-    height: 10%;
-    border-bottom: 1px solid #5391659f;
+.calanderRight {
+  background-color: white;
+  width: 70%;
+  height: 95%;
+  border-radius: 15px;
+  padding: 15px;
 }
-.dataListLeft{
-    width: 25%;
-    height: 95%;
-    border-radius: 15px;
-    overflow: scroll;
-    background-color: white;
+.headerCalanderRight {
+  height: 10%;
+  border-bottom: 1px solid #5391659f;
 }
-.headerDataListLeft{
-    height: 10%;
-    border-bottom: 1px solid #5391659f;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content:right;
-    align-items: center;
-    padding: 0px 15px 0px 15px;
+.dataListLeft {
+  width: 25%;
+  height: 95%;
+  border-radius: 15px;
+  /* overflow: scroll; */
+  background-color: white;
 }
-
-
-
-
-
-.fc-direction-ltr{
-    direction: rtl;
-    text-align: center;
-}
-.fc .fc-scroller-harness{
-    direction: rtl;
-}
-colgroup{
-    direction: rtl;
+.headerDataListLeft {
+  height: 10%;
+  border-bottom: 1px solid #5391659f;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: 0px 15px 0px 15px;
 }
 
+.fc-direction-ltr {
+  direction: rtl;
+  text-align: center;
+}
+.fc .fc-scroller-harness {
+  direction: rtl;
+}
+colgroup {
+  direction: rtl;
+}
 
 /*New Event Pop Up*/
-.popUpEvents{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
+.popUpEvents {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
 }
-.innerPopUpEvents{
-    position:relative;
-    padding: 25px;
-    width: 400px;
-    height: 500px;
-    background-color: #fff;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
+.divInfoInput {
+  margin: 8px;
 }
-.innerEvents1{
-    height: 5%;
-    display: flex;
-    justify-content: right;
-    align-items: center;
+.innerPopUpEvents {
+  position: relative;
+  padding: 25px;
+  width: 400px;
+  height: 500px;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
 }
-.innerEvents2{
-    height: 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid #5391659f;
+.innerEvents1 {
+  height: 5%;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
-.innerEvents2 h1{
-    font-size: large;
+.innerEvents2 {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid #5391659f;
 }
-.innerEvents3{
-    height: 85%;
+.innerEvents2 h1 {
+  font-size: large;
 }
-
+.innerEvents3 {
+  height: 85%;
+}
+.MuiSvgIcon-root {
+  cursor: pointer;
+}
 /*Page 1 - Event Info*/
-.Step1Main{
-    height: 90%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items: center;
+.Step1Main {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.Step1MainInner1{
-    height: 10%;
-    width: 100%;
-    padding-right: 10px;
-    padding-left: 10px;
-    display: flex;
-    justify-content:right;
-    align-items: center;
+.Step1MainInner1 {
+  height: 10%;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
-.Step1MainInner1 h1{
-    font-size: small;
-    margin: 0px;
+.Step1MainInner1 h1 {
+  font-size: small;
+  margin: 0px;
 }
-.Step1MainInner2{
-    height: 90%;
-    width: 100%;
-    overflow: scroll;
-    padding-left: 10px;
-    padding-right: 10px;
+.Step1MainInner2 {
+  height: 90%;
+  width: 100%;
+  /* overflow: scroll; */
+  padding-left: 10px;
+  padding-right: 10px;
 }
-.divInfoInput input{
-    font: inherit;
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: 1px solid #5391659f;
-    width: 12rem;
-    max-width: 100%;
-    height: 2rem;
-    text-align: right;
+.divInfoInput input {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #5391659f;
+  width: 12rem;
+  max-width: 100%;
+  height: 2rem;
+  text-align: right;
 }
-.divInfoInput label{
-    text-align: right;
-    background-color: aqua;
-    font-size: 10px;
-}
-
-.Step1Bottum{
-    height: 10%;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    justify-content:left;
-    align-items: center;
+.divInfoInput label {
+  text-align: right;
+  background-color: aqua;
+  font-size: 10px;
 }
 
-
+.Step1Bottum {
+  height: 10%;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
 
 /*Page 2 - Select Customer*/
-.Step2Main{
-    height: 90%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items: center;
+.Step2Main {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.Step2MainInner1{
-    height: 10%;
-    width: 100%;
-    padding-right: 10px;
-    padding-left: 10px;
-    display: flex;
-    justify-content:right;
-    align-items: center;
+.Step2MainInner1 {
+  height: 10%;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
-.Step2MainInner1 h1{
-    font-size: small;
-    margin: 0px;
+.Step2MainInner1 h1 {
+  font-size: small;
+  margin: 0px;
 }
-.Step2MainInner2{
-    height: 90%;
-    width: 100%;
-    overflow: scroll;
+.Step2MainInner2 {
+  height: 90%;
+  width: 100%;
+  overflow: scroll;
 }
-.Step2Bottum{
-    height: 10%;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
+.Step2Bottum {
+  height: 10%;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-#dataTableCustomers{
-    padding: 10px;
+#dataTableCustomers {
+  padding: 10px;
 }
 #dataTableCustomers .ewhdCu {
-    flex-direction:row-reverse;
+  flex-direction: row-reverse;
 }
-
-
-
-
 
 /*Page 3 - Select Customer*/
-.Step3Main{
-    height: 90%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items: center;
+.Step3Main {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.Step3MainInner1{
-    height: 10%;
-    width: 100%;
-    padding-right: 10px;
-    padding-left: 10px;
-    display: flex;
-    justify-content:right;
-    align-items: center;
+.Step3MainInner1 {
+  height: 10%;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
-.Step3MainInner1 h1{
-    font-size: small;
-    margin: 0px;
+.Step3MainInner1 h1 {
+  font-size: small;
+  margin: 0px;
 }
-.Step3MainInner2{
-    height: 90%;
-    width: 100%;
-    overflow: scroll;
+.Step3MainInner2 {
+  height: 90%;
+  width: 100%;
+  overflow: scroll;
 }
-.Step3Bottum{
-    height: 10%;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
+.Step3Bottum {
+  height: 10%;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.textInputAmount{
-    width: 50px;
-    border-radius: 5px;
-}
-
-
-
-
-.innerEvents59{
-    height: 10%;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    justify-content: left;
-    align-items: center;
+.textInputAmount {
+  width: 50px;
+  border-radius: 5px;
 }
 
-
+.innerEvents59 {
+  height: 10%;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}

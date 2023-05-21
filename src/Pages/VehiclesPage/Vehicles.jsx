@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import "./VehiclesCss.css";
 import VehiclesPopUp from "./VehiclesPopUp";
@@ -6,37 +5,33 @@ import DataTable from "react-data-table-component";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import BuildIcon from '@mui/icons-material/Build';
-import {Menu,MenuHandler,MenuList,MenuItem} from "@material-tailwind/react";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import BuildIcon from "@mui/icons-material/Build";
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from "@material-tailwind/react";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import NewVehicleMaintenance from "./NewVehicleMaintenance";
-import UpdateVehicles from "./UpdateVehiclePopUp";
+import EditVehiclePopUp from "./EditVehiclePopUp";
+import DeletePopup from "./DeletePopup";
+
 const url =
   "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/get?timestamp=" +
   Date.now();
 
 const urlpost = "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/post";
-const urldelete = "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/delete";
+const urldelete =
+  "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/delete";
 const username = "cgroup96";
 const password = "your_password";
-const urlmaintencepost="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleAdd/post";
-const urlputvehicle="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/put";
+const urlmaintencepost =
+  "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleAdd/post";
+const urlputvehicle =
+  "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/put";
 const headers = new Headers();
 headers.append("Authorization", "Basic " + btoa(username + ":" + password));
-
-const DeleteConfirmPopup = ({ show, onClose, onDelete }) => {
-  if (!show) return null;
-
-  return (
-    <div className="delete-confirm-popup">
-      <div className="delete-confirm-popup-content">
-        <h3>? האם אתה בטוח שאתה רוצה למחוק רכב זה </h3>
-        <button onClick={onDelete}>כן</button>
-        <button onClick={onClose}>לא</button>
-      </div>
-    </div>
-  );
-};
 
 const Vehicles = () => {
   const [datainfo, setDatainfo] = useState([]);
@@ -44,16 +39,19 @@ const Vehicles = () => {
   const [dataUpdated, setDataUpdated] = useState(false);
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [licenseNumToDelete, setLicenseNumToDelete] = useState(null);   
+  const [licenseNumToDelete, setLicenseNumToDelete] = useState(null);
   const [maintenancePopUp, setMaintenancePopUp] = useState(false);
   const [updateVehicleVisible, setUpdateVehicleVisible] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState(null); 
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [showUpdate, setShowUpdate] = useState(false);
   const refreshData = useCallback(
     () => setDataUpdated(!dataUpdated),
     [dataUpdated]
   );
-
-
+  const closeUpdateVehiclePopup = () => {
+    setSelectedVehicle(null);
+    setUpdateVehicleVisible(false);
+  };
   function addMaintenanceItem(item, refreshData) {
     fetch(urlmaintencepost, {
       method: "POST",
@@ -79,7 +77,8 @@ const Vehicles = () => {
   }
 
   function deleteMaintenance(maintenanceId) {
-    const deletemainturl="https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleMaintence/delete";
+    const deletemainturl =
+      "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleMaintence/delete";
     fetch(deletemainturl, {
       method: "DELETE",
       headers: {
@@ -107,14 +106,11 @@ const Vehicles = () => {
         console.log("err delete=", error);
       });
   }
-  
-
 
   function showDeleteConfirmation(licenseNum) {
     setLicenseNumToDelete(licenseNum);
     setShowDeleteConfirm(true);
   }
-
 
   function addVehiclesItem(item, refreshData) {
     fetch(urlpost, {
@@ -140,7 +136,7 @@ const Vehicles = () => {
       });
   }
 
-  function updateVehiclesItem (item, refreshData) {
+  function updateVehiclesItem(item, refreshData) {
     fetch(urlputvehicle, {
       method: "PUT",
       headers: {
@@ -163,18 +159,11 @@ const Vehicles = () => {
         console.log("err post=", error);
       });
   }
- const openUpdateVehiclePopup = (vehicle) => {
-  console.log("openUpdateVehiclePopup called", vehicle);
-  setSelectedVehicle({
-    licensePlateNum: vehicle.licenseNum,
-    vehicleType: vehicle.vehicleType1,
-    vehicleColor: vehicle.vehicleColor1,
-    vehicleOwnership: vehicle.vehicleOwnership1,
-    manufacturingYear: vehicle.manufacturingYear1,
-  });
-  setUpdateVehicleVisible(true);
-};
-
+  const openEditPopup = (vehicle) => {
+    console.log("open Edit Vehicle Popup called for: ", vehicle);
+    setSelectedVehicle(vehicle);
+    setUpdateVehicleVisible(true);
+  };
 
   function deleteVehicle(itemId) {
     fetch(urldelete, {
@@ -183,7 +172,7 @@ const Vehicles = () => {
         ...headers, // Spread the existing headers
         "Content-Type": "application/json", // Add the 'Content-Type' header
       },
-      body: JSON.stringify({ licensePlateNum : itemId }),
+      body: JSON.stringify({ licensePlateNum: itemId }),
     })
       .then((res) => {
         console.log("item id is:", itemId);
@@ -216,7 +205,7 @@ const Vehicles = () => {
       })
       .then((result) => {
         console.log("fetch Vehicles = ", result);
-        const updatedDatainfo = result.map(st => {
+        const updatedDatainfo = result.map((st) => {
           return {
             setting: <button>עריכה</button>,
             licenseNum: st.licensePlateNum,
@@ -237,16 +226,9 @@ const Vehicles = () => {
 
   const columnsLeftData = [
     {
-      name: "מספר טיפול",
-      selector: "maintID",
-      right:true,
-      sortable: true,
-      width: "20%",
-    },
-    {
       name: "תאריך ושעה",
       selector: "DateandTime",
-      right:true,
+      right: true,
       sortable: true,
       width: "25%",
     },
@@ -269,16 +251,15 @@ const Vehicles = () => {
       selector: "Setting",
       center: true,
       width: "10%",
-      cell: row => (
+      cell: (row) => (
         <div>
           <Menu className="menuListRow">
             <MenuHandler>
-              <MoreVertIcon/>
+              <MoreVertIcon />
             </MenuHandler>
-              <MenuList >
-                
-                <MenuItem onClick={() => deleteMaintenance(row.maintID)}>
-              <DeleteIcon />
+            <MenuList>
+              <MenuItem onClick={() => deleteMaintenance(row.maintID)}>
+                <DeleteIcon />
               </MenuItem>
             </MenuList>
           </Menu>
@@ -290,41 +271,41 @@ const Vehicles = () => {
 
   function fetchMaintenanceData(licenseNum) {
     const maintenanceUrl = `https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleMaintenance/add`;
-  
+
     fetch(maintenanceUrl, {
       method: "POST",
       headers: {
         ...headers, // Spread the existing headers
         "Content-Type": "application/json", // Add the 'Content-Type' header
       },
-      body: JSON.stringify({vehicle_id : licenseNum }),
+      body: JSON.stringify({ vehicle_id: licenseNum }),
     })
-    .then((res) => {
-      console.log(licenseNum)
-      console.log("res=", res);
-      console.log("res.status", res.status);
-      console.log("res.ok", res.ok);
-      return res.json();
-    })
+      .then((res) => {
+        console.log(licenseNum);
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
       .then((result) => {
         console.log("Fetched Maintenance Data =", result);
-        const updatedMaintenanceData = result.map(item => {
+        const updatedMaintenanceData = result.map((item) => {
           return {
-            maintID:item.maintenance_id,
+            maintID: item.maintenance_id,
             DateandTime: item.maintenance_date,
             GarageName: item.garageName,
             maintanceName: item.maintenance_description,
             Setting: <button>עריכה</button>,
           };
         });
-        setMaintenanceData(updatedMaintenanceData);// Update the maintenance data in the state
+        setMaintenanceData(updatedMaintenanceData); // Update the maintenance data in the state
       })
       .catch((error) => console.log("Error fetching maintenance data:", error));
   }
 
   const columns = [
     {
-      name: "היסטוריית טיפולים",
+      name: "היסטורית טיפולים",
       selector: "action",
       sortable: false,
       right: true,
@@ -333,7 +314,6 @@ const Vehicles = () => {
       cell: (row) => (
         <div className="iconsDataTable">
           <BuildIcon onClick={() => fetchMaintenanceData(row.licenseNum)} />
-          
         </div>
       ),
     },
@@ -343,10 +323,22 @@ const Vehicles = () => {
       sortable: false,
       right: true,
       button: true,
-      width: "15%",
+      width: "5%",
       cell: (row) => (
         <div className="iconsDataTable">
-          <EditIcon onClick={() => openUpdateVehiclePopup(row)} />
+          <EditIcon onClick={() => openEditPopup(row)} />
+        </div>
+      ),
+    },
+    {
+      name: "מחיקה",
+      selector: "action",
+      sortable: false,
+      right: true,
+      button: true,
+      width: "5%",
+      cell: (row) => (
+        <div className="iconsDataTable">
           <DeleteIcon onClick={() => showDeleteConfirmation(row.licenseNum)} />
         </div>
       ),
@@ -356,21 +348,21 @@ const Vehicles = () => {
       selector: "licenseNum",
       sortable: true,
       right: true,
-      width: "20%",
+      width: "16%",
     },
     {
       name: " סוג רכב",
       selector: "vehicleType1",
       sortable: true,
       right: true,
-      width: "20%",
+      width: "15%",
     },
     {
       name: " בעלות",
       selector: "vehicleOwnership1",
       sortable: true,
       right: true,
-      width: "15%",
+      width: "12%",
     },
     {
       name: "צבע",
@@ -403,30 +395,29 @@ const Vehicles = () => {
           setTrigger={setButtonPopUp}
           addVehiclesItem={(item) => addVehiclesItem(item, refreshData)}
         />
+        <EditVehiclePopUp
+          trigger={updateVehicleVisible}
+          setTrigger={setUpdateVehicleVisible}
+          vehicle={selectedVehicle}
+          visible={updateVehicleVisible}
+          onClose={closeUpdateVehiclePopup}
+          onUpdate={(item) => updateVehiclesItem(item, refreshData)}
+        />
 
-    <DeleteConfirmPopup
-      show={showDeleteConfirm}
-      onClose={() => setShowDeleteConfirm(false)}
-      onDelete={() => {
-      deleteVehicle(licenseNumToDelete);
-     setShowDeleteConfirm(false);
-     }}
-    />    
-
-  {/* <UpdateVehicles
-   trigger={updateVehicleVisible}
-   setTrigger={setUpdateVehicleVisible}
-    updateVehiclesItem={updateVehiclesItem}
-    
-  /> */}
-    
-
-  <NewVehicleMaintenance
-  trigger={maintenancePopUp}
-  setTrigger={setMaintenancePopUp}
-  addMaintenanceItem={(item) => addMaintenanceItem(item, refreshData)}
-  vehicles={datainfo}
-  />
+        <DeletePopup
+          show={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onDelete={() => {
+            deleteVehicle(licenseNumToDelete);
+            setShowDeleteConfirm(false);
+          }}
+        />
+        <NewVehicleMaintenance
+          trigger={maintenancePopUp}
+          setTrigger={setMaintenancePopUp}
+          addMaintenanceItem={(item) => addMaintenanceItem(item, refreshData)}
+          vehicles={datainfo}
+        />
 
         <div id="vehiclesTable">
           <DataTable
@@ -446,12 +437,15 @@ const Vehicles = () => {
           </div>
           <div className="bottumInfo">
             <div className="innerheaderInfo">
-              <AddCircleIcon onClick={() => setMaintenancePopUp(true)} className="iconBC" />
+              <AddCircleIcon
+                onClick={() => setMaintenancePopUp(true)}
+                className="iconBC"
+              />
               <label>טיפולי רכב</label>
             </div>
             <div>
-            <DataTable columns={reversedColumns} data={maintenanceData}/>
-          </div>
+              <DataTable columns={reversedColumns} data={maintenanceData} />
+            </div>
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ function NewVehicleMaintenance({ trigger, setTrigger, addMaintenanceItem, vehicl
           
         };
       
-        console.log(newItemInput);
+        console.log("New Maintenance Input: " + newItemInput);
         addMaintenanceItem(newItemInput);
         resetTextHandler();
         setTrigger(false);
@@ -69,27 +69,18 @@ function NewVehicleMaintenance({ trigger, setTrigger, addMaintenanceItem, vehicl
               <HighlightOffIcon onClick={closeForm} />
               <h1>הוספת תחזוקת רכב חדשה</h1>
             </div>
-            <div id="mainInfoPopUp">
-              <div className="rightInnerPopUp">
-                <div className="inputsInfo">
-                  <label>מספר טיפול</label>
-                  <input
-                    placeholder="מספר טיפול"
-                    type="text"
-                    value={maintenanceId}
-                    onChange={maintenanceIdHandler}
-                  />
-                </div>
-                <div className="inputsInfo">
+            <div id="innerPopUp">
+              <div className="login__control">
+                <div className="login__control">
                   <label>תאריך טיפול</label>
                   <input
                     placeholder="Maintenance Date"
-                    type="datetime-local"
+                    type="date"
                     value={maintenanceDate}
                     onChange={maintenanceDateHandler}
                   />
                 </div>
-                <div className="inputsInfo">
+                <div className="login__control">
                   <label>תיאור הטיפול</label>
                   <input
                     placeholder="טיפול 30 אלף"
@@ -98,7 +89,7 @@ function NewVehicleMaintenance({ trigger, setTrigger, addMaintenanceItem, vehicl
                     onChange={maintenanceDescriptionHandler}
                   />
                 </div>
-                <div className="inputsInfo">
+                <div className="login__control">
                   <label>שם המוסך</label>
                   <input
                     placeholder="מוסך הארבעה"
@@ -108,23 +99,11 @@ function NewVehicleMaintenance({ trigger, setTrigger, addMaintenanceItem, vehicl
                   />
                 </div>
                 <div className="inputsInfo">
-                <label>מספר רישוי</label>
-                  <select value={selectedLicenseNum} onChange={handleLicenseNumChange}>
-                  <option value="">בחר מספר רישוי</option>
-                 {vehicles.map((vehicle) => (
-                 <option key={vehicle.licenseNum} value={vehicle.licenseNum}>
-                  {vehicle.licenseNum}
-                </option>
-          ))}
-        </select>
-                </div>
-                <div className="inputsInfo">
                   <Button className="login_Button" onClick={saveHandler}>
-                    שמירת תחזוקת רכב חדשה
+                    שמור
                   </Button>
                 </div>
               </div>
-              
             </div>
           </div>
         </div>

@@ -131,22 +131,25 @@
     flex-direction:row-reverse;
     justify-content:right;
     width: 450px;
+        
+    padding-right: 20px;
 }
-.leftInnerPopUp{
+/* .leftInnerPopUp{
     width: 50%;
     background-color: blueviolet;
     border-right-style: dashed;
     padding-left: 20px;
 }
 .rightInnerPopUp{
-    width: 50%;
+    width: 100%;
     padding-right: 20px;
-}
+} */
 .inputsInfo{
     display: grid;
     flex-direction: column;
-    justify-content:right;
+    /* justify-content:right; */
     margin-top: 10px;
+    
 }
 .inputsInfo label{
     margin-bottom: 5px;
@@ -156,7 +159,7 @@
     display: flex;
     text-align: right;
     justify-self:right;
-    width: 80%;
+    width: 100%;
 }
 
 .delete-confirm-popup {

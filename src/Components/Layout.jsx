@@ -14,28 +14,34 @@ import Catalog from "../Pages/CatalogPage/Catalog";
 import Inventories from "../Pages/InventoriesPage/Inventories";
 import Setting from "../Pages/SettingPage/Setting";
 import LoginForm from "./LoginForm";
+import CalendarTest from  "../Pages/MainPage/CalendarTest";
 import "../CompponetsCSS/Layout.css"
 
 export const Layout = () => {
   return (
     <div className="root">
-       <div id="Header"><Header/></div>
-       <div id="NaveBar"><NaveSlidBar/></div>    
-       <div id="MainBody">
-       <Routes>
-          <Route path="/" element={<MainPage/>}/>
-          <Route path="/offers" element={<Offers/>}/>
-          <Route path="/customers" element={<Customers/>}/>
-          <Route path="/suppliers" element={<Suppliers/>}/>
-          <Route path="/team" element={<Team/>}/>
-          <Route path="/reports" element={<Reports/>}/>
-          <Route path="/vehicles" element={<Vehicles/>}/>
-          <Route path="/catalog" element={<Catalog/>}/>
-          <Route path="/inventories" element={<Inventories/>}/>
-          <Route path="/setting" element={<Setting/>}/>
-          <Route path="/loginform" element={<LoginForm/>}/>
+      <div id="Header">
+        <Header />
+      </div>
+      <div id="NaveBar">
+        <NaveSlidBar />
+      </div>
+      <div id="MainBody">
+        <Routes>
+          {/* <Route path="/" element={<MainPage />} /> */}
+          <Route path="/" element={<CalendarTest />} />
+          <Route path="/offers" element={<Offers />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/vehicles" element={<Vehicles />} />
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/inventories" element={<Inventories />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/loginform" element={<LoginForm />} />
         </Routes>
-       </div>
+      </div>
     </div>
   );
 };
