@@ -29,42 +29,14 @@ const EditVehiclePopUp = ({
       });
     }
   }, [vehicle]);
+
 const handleInputChange = (event) => {
   setEditForm({
     ...editForm,
     [event.target.name]: event.target.value,
   });
+  console.log("Edit inputs: ", editForm);
 };
-const licenceChangeHandler = (event) => {
-  setEditForm({
-    ...editForm,
-    [event.target.name]: event.target.value,
-  });
-};
-const typeChangeHandler = (event) => {
-  setEditForm({
-    ...editForm,
-    [event.target.name]: event.target.value,
-  });
-};
-  const yearChangeHandler = (event) => {
-    setEditForm({
-      ...editForm,
-      [event.target.name]: event.target.value,
-    });
-  };
-  const vehicleColorHandler = (event) => {
-  setEditForm({
-    ...editForm,
-    [event.target.name]: event.target.value,
-  });
-};
-  const vehicleOwnershipHandler = (event) => {
-    setEditForm({
-      ...editForm,
-      [event.target.name]: event.target.value,
-    });
-  };
   const saveHandler = (e) => {
     e.preventDefault();
     const newItemInput = {
@@ -76,6 +48,8 @@ const typeChangeHandler = (event) => {
       key: editForm.licenseNum,
     };
     console.log( newItemInput);
+    // updateVehiclesItem(newItemInput); //-- this function casuing the popup not to work
+    closeForm();
   }
   const closeForm = () => {
     console.log("close this form - Edit Vehicle");
@@ -97,8 +71,7 @@ const typeChangeHandler = (event) => {
                   type="text"
                   name="licenseNum"
                   value={editForm.licenseNum}
-                  onChange={licenceChangeHandler}
-                  
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="login__control">
@@ -107,8 +80,7 @@ const typeChangeHandler = (event) => {
                   type="text"
                   name="vehicleType1"
                   value={editForm.vehicleType1}
-                  onChange={typeChangeHandler}
-                  
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="login__control">
@@ -117,7 +89,7 @@ const typeChangeHandler = (event) => {
                   placeholder="שנת יצור"
                   type="text"
                   value={editForm.manufacturingYear1}
-                  onChange={yearChangeHandler}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="login__control">
@@ -126,7 +98,7 @@ const typeChangeHandler = (event) => {
                   placeholder="צבע רכב"
                   type="text"
                   value={editForm.vehicleColor1}
-                  onChange={vehicleColorHandler}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="login__control">
@@ -135,7 +107,7 @@ const typeChangeHandler = (event) => {
                   placeholder="בעלות רכב"
                   type="text"
                   value={editForm.vehicleOwnership1}
-                  onChange={vehicleOwnershipHandler}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="inputsInfo">

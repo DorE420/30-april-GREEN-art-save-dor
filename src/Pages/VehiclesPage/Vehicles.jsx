@@ -268,7 +268,6 @@ const Vehicles = () => {
     },
   ];
   const reversedColumns = [...columnsLeftData].reverse();
-
   function fetchMaintenanceData(licenseNum) {
     const maintenanceUrl = `https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleMaintenance/add`;
 
@@ -302,7 +301,6 @@ const Vehicles = () => {
       })
       .catch((error) => console.log("Error fetching maintenance data:", error));
   }
-
   const columns = [
     {
       name: "היסטורית טיפולים",
@@ -379,7 +377,6 @@ const Vehicles = () => {
       width: "15%",
     },
   ];
-
   return (
     <div id="mainBodyVehicles">
       <div id="headerVehicles">
@@ -388,7 +385,6 @@ const Vehicles = () => {
         </button>
         <h1>רכבים</h1>
       </div>
-
       <div id="innerMainVehicles">
         <VehiclesPopUp
           trigger={buttonPopUp}
@@ -403,7 +399,6 @@ const Vehicles = () => {
           onClose={closeUpdateVehiclePopup}
           onUpdate={(item) => updateVehiclesItem(item, refreshData)}
         />
-
         <DeletePopup
           show={showDeleteConfirm}
           onClose={() => setShowDeleteConfirm(false)}
@@ -418,7 +413,6 @@ const Vehicles = () => {
           addMaintenanceItem={(item) => addMaintenanceItem(item, refreshData)}
           vehicles={datainfo}
         />
-
         <div id="vehiclesTable">
           <DataTable
             columns={columns}
@@ -427,14 +421,7 @@ const Vehicles = () => {
             className="dataTableVehicles"
           />
         </div>
-
         <div id="vehiclesInfo">
-          <div className="topInfo">
-            <div className="innerheaderInfo">
-              <EditIcon className="iconBC" />
-              <label>פרטי הרכב</label>
-            </div>
-          </div>
           <div className="bottumInfo">
             <div className="innerheaderInfo">
               <AddCircleIcon

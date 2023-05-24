@@ -47,7 +47,7 @@ const NaveSlidBar = (props) => {
               </ListItem>
             </div>
           </Link>
-          <Link to={"/Offers"}>
+          {/* <Link to={"/Offers"}>
             <div className="listItem">
               <ListItem>
                 <ListItemIcon>
@@ -57,7 +57,7 @@ const NaveSlidBar = (props) => {
                 <ListItemText className="textItem" primary="הצעת מחיר" />
               </ListItem>
             </div>
-          </Link>
+          </Link> */}
           <Link to={"/Customers"}>
             <div className="listItem">
               <ListItem>
