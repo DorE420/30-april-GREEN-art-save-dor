@@ -4,64 +4,43 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./TeamCss.css";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-function TeamPopUp(props) {
-  const [name, setName] = useState("");
-  const [surname, setSurName] = useState("");
-  const [position, setPosition] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+const TeamPopUp = ({ trigger, setTrigger }) => {
+  const [form, setForm] = useState({
+    name: "",
+    surname: "",
+    position: "",
+    phone: "",
+    email: "",
+    id: "",
+  });
 
-
-  const setNameInput = (e) => {
-    setName(e.target.value);
-    console.log("Name:" + e.target.value);
-  }
-  
- const setSurNameInput = (e) => {
-   setSurName( e.target.value);
-   console.log("Last Name:" + e.target.value);
- };
-  const setPositionInput = (e) => {
-    setPosition( e.target.value);
-    console.log("Position:" + e.target.value);
+  const handleInputChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
-   const setPhoneInput = (e) => {
-     setPhone( e.target.value);
-     console.log("Tell:" + e.target.value);
-   };
-    const setEmailInput = (e) => {
-      setEmail( e.target.value);
-       console.log("Email:" + e.target.value);
-    };
 
   const saveHandler = (e) => {
     e.preventDefault();
-    const newEmplInput = {
-      firstName: name,
-      lastName: surname,
-      job: position,
-      tel: phone,
-      mail: email,
-    };
-    console.log(
-      "*************************************************************************"
-    );
-    console.log( newEmplInput);
+    console.log(form);
 
-    resetTextHandler();
+    resetForm();
+    setTrigger(false);
   };
-  const resetTextHandler = () => {
-    setName("");
-    setSurName("");
-    setPosition("");
-    setPhone("");
-    setEmail("");
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      surname: "",
+      position: "",
+      phone: "",
+      email: "",
+      id: "",
+    });
   };
   const closeForm = () => {
-    props.setTrigger(false);
+    setTrigger(false);
   };
 
-  return props.trigger ? (
+  return trigger ? (
     <div className="popUp">
       <div className="innerPopUp">
         <HighlightOffIcon onClick={closeForm} />
@@ -70,61 +49,75 @@ function TeamPopUp(props) {
         <div className="login__control ">
           <label className="ltrInput">שם פרטי</label>
           <input
+            name="name"
             placeholder="פלוני"
             type="text"
-            value={name}
-            onChange={setNameInput}
+            value={form.name}
+            onChange={handleInputChange}
           />
         </div>
 
         <div className="login__control password-input-wrapper">
           <label>שם משפחה</label>
           <input
+            name="surname"
             placeholder="אלמוני"
             type="text"
-            value={surname}
-            onChange={setSurNameInput}
+            value={form.surname}
+            onChange={handleInputChange}
           />
         </div>
 
         <div className="login__control password-input-wrapper">
           <label>תפקיד</label>
           <input
+            name="position"
             placeholder="תפקיד העובד"
             type="text"
-            value={position}
-            onChange={setPositionInput}
+            value={form.position}
+            onChange={handleInputChange}
           />
         </div>
 
         <div className="login__control password-input-wrapper">
           <label>מספר טלפון</label>
           <input
+            name="phone"
             placeholder="0525381648"
             type="text"
-            value={phone}
-            onChange={setPhoneInput}
+            value={form.phone}
+            onChange={handleInputChange}
           />
         </div>
         <div className="login__control password-input-wrapper">
           <label>כתובת מייל</label>
           <input
-            placeholder="Example@testing.com"
+            name="email"
+            placeholder="example@testing.com"
             type="text"
-            value={email}
-            onChange={setEmailInput}
+            value={form.email}
+            onChange={handleInputChange}
           />
         </div>
-
-        <Button className="login_Button" onClick={saveHandler}>
-          שמירה
-        </Button>
-
-        {props.children}
+        <div className="login__control ">
+          <label className="ltrInput">תעודת זהות </label>
+          <input
+            name="name"
+            placeholder="307659432"
+            type="text"
+            value={form.id}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="inputsInfo">
+          <Button className="login_Button" onClick={saveHandler}>
+            שמירה
+          </Button>
+        </div>
       </div>
     </div>
   ) : (
     ""
   );
-}
+};
 export default TeamPopUp;

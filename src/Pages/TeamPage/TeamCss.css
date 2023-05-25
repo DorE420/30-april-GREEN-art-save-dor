@@ -41,9 +41,18 @@
 .ltrInput{
     direction: ltr;
 }
+.dataTableTeam{
+    padding: 5px;
+    border-radius: 10px; 
+    
+}
 
-
-
+#TeamTable{
+    width: 60%;
+    overflow: scroll;
+    border-left: 1px solid rgba(0, 0, 0, 0.436);
+    direction: ltr;
+}
 
 
 #mainBodyTeam{
@@ -81,6 +90,7 @@
     display:flex;
     justify-content:center;
     align-items: center;
+    direction: rtl;
 }
 .JobInfo{
     width: 95%;
