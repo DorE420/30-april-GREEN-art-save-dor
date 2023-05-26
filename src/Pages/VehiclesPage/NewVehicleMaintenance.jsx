@@ -8,11 +8,15 @@ import { registerLocale, setDefaultLocale } from "react-datepicker";
 import he from "date-fns/locale/he";
 import "react-datepicker/dist/react-datepicker.css";
 
+registerLocale('he', he);
+setDefaultLocale('he');
+
+
 function NewVehicleMaintenance({
   trigger,
   setTrigger,
   addMaintenanceItem,
-  vehicles,
+  selectedLicenseForMaintenance,
 }) {
   const [maintenanceId, setMaintenanceId] = useState("");
   // const [maintenanceDate, setMaintenanceDate] = useState("");
@@ -61,7 +65,8 @@ function NewVehicleMaintenance({
       maintenance_date: maintenanceDate,
       maintenance_description: maintenanceDescription,
       garageName: garageName,
-      vehicle_id: selectedLicenseNum,
+      vehicle_id: selectedLicenseForMaintenance,
+      
     };
 
     console.log("New Maintenance Input: ", newItemInput);
@@ -80,6 +85,7 @@ function NewVehicleMaintenance({
         <div id="innerPopUp">
           <div className="login__control">
             <div className="login__control">
+            <span style={{fontWeight: "bold", textDecoration: "underline"}}>מספר רישוי : {selectedLicenseForMaintenance}</span>
               <label>תאריך טיפול</label>
               {/* <input
                     placeholder="Maintenance Date"
@@ -109,6 +115,15 @@ function NewVehicleMaintenance({
                 type="text"
                 value={garageName}
                 onChange={garageNameHandler}
+              />
+            </div>
+            <div className="login__control">
+              <label>מספר טיפול</label>
+              <input
+                placeholder="3423523"
+                type="text"
+                value={maintenanceId}
+                onChange={maintenanceIdHandler}
               />
             </div>
             <div className="inputsInfo">

@@ -48,7 +48,7 @@ const handleInputChange = (event) => {
       key: editForm.licenseNum,
     };
     console.log( newItemInput);
-    // updateVehiclesItem(newItemInput); //-- this function casuing the popup not to work
+     updateVehiclesItem(newItemInput); //-- this function casuing the popup not to work
     closeForm();
   }
   const closeForm = () => {
@@ -67,12 +67,8 @@ const handleInputChange = (event) => {
             <div className="login__control">
               <div className="login__control">
                 <label>מספר רישוי רכב</label>
-                <input
-                  type="text"
-                  name="licenseNum"
-                  value={editForm.licenseNum}
-                  onChange={handleInputChange}
-                />
+                <span style={{fontWeight: "bold", textDecoration: "underline"}}>{editForm.licenseNum}</span>
+
               </div>
               <div className="login__control">
                 <label>סוג רכב</label>
@@ -88,6 +84,7 @@ const handleInputChange = (event) => {
                 <input
                   placeholder="שנת יצור"
                   type="text"
+                  name="manufacturingYear1"
                   value={editForm.manufacturingYear1}
                   onChange={handleInputChange}
                 />
@@ -97,6 +94,7 @@ const handleInputChange = (event) => {
                 <input
                   placeholder="צבע רכב"
                   type="text"
+                  name="vehicleColor1"
                   value={editForm.vehicleColor1}
                   onChange={handleInputChange}
                 />
@@ -106,6 +104,7 @@ const handleInputChange = (event) => {
                 <input
                   placeholder="בעלות רכב"
                   type="text"
+                  name="vehicleOwnership1"
                   value={editForm.vehicleOwnership1}
                   onChange={handleInputChange}
                 />

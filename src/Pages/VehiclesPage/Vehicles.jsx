@@ -16,6 +16,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import NewVehicleMaintenance from "./NewVehicleMaintenance";
 import EditVehiclePopUp from "./EditVehiclePopUp";
 import DeletePopup from "./DeletePopup";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const url =
   "https://proj.ruppin.ac.il/cgroup96/prod/api/vehicleList/get?timestamp=" +
@@ -44,6 +46,7 @@ const Vehicles = () => {
   const [updateVehicleVisible, setUpdateVehicleVisible] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [selectedLicenseForMaintenance, setSelectedLicenseForMaintenance] = useState(null);
   const refreshData = useCallback(
     () => setDataUpdated(!dataUpdated),
     [dataUpdated]
@@ -62,6 +65,7 @@ const Vehicles = () => {
       body: JSON.stringify(item),
     })
       .then((res) => {
+        console.log(item);
         console.log("res=", res);
         console.log("res.status", res.status);
         console.log("res.ok", res.ok);
@@ -146,6 +150,7 @@ const Vehicles = () => {
       body: JSON.stringify(item),
     })
       .then((res) => {
+        console.log(item);
         console.log("res=", res);
         console.log("res.status", res.status);
         console.log("res.ok", res.ok);
@@ -311,7 +316,10 @@ const Vehicles = () => {
       width: "15%",
       cell: (row) => (
         <div className="iconsDataTable">
-          <BuildIcon onClick={() => fetchMaintenanceData(row.licenseNum)} />
+          <BuildIcon onClick={() => {
+             fetchMaintenanceData(row.licenseNum);
+            setSelectedLicenseForMaintenance(row.licenseNum);
+              }} />
         </div>
       ),
     },
@@ -397,7 +405,7 @@ const Vehicles = () => {
           vehicle={selectedVehicle}
           visible={updateVehicleVisible}
           onClose={closeUpdateVehiclePopup}
-          onUpdate={(item) => updateVehiclesItem(item, refreshData)}
+          updateVehiclesItem={(item) => updateVehiclesItem(item, refreshData)}
         />
         <DeletePopup
           show={showDeleteConfirm}
@@ -412,6 +420,7 @@ const Vehicles = () => {
           setTrigger={setMaintenancePopUp}
           addMaintenanceItem={(item) => addMaintenanceItem(item, refreshData)}
           vehicles={datainfo}
+          selectedLicenseForMaintenance={selectedLicenseForMaintenance}
         />
         <div id="vehiclesTable">
           <DataTable
@@ -424,10 +433,16 @@ const Vehicles = () => {
         <div id="vehiclesInfo">
           <div className="bottumInfo">
             <div className="innerheaderInfo">
-              <AddCircleIcon
-                onClick={() => setMaintenancePopUp(true)}
-                className="iconBC"
-              />
+            <AddCircleIcon
+               onClick={() => {
+                if (selectedLicenseForMaintenance) {
+                setMaintenancePopUp(true);
+               } else {
+                toast.warning("לא נבחר רכב עבור טיפול");
+                }
+                }}
+               className="iconBC"
+            />
               <label>טיפולי רכב</label>
             </div>
             <div>
