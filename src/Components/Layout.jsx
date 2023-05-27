@@ -15,8 +15,8 @@ import Inventories from "../Pages/InventoriesPage/Inventories";
 import Setting from "../Pages/SettingPage/Setting";
 import LoginForm from "./LoginForm";
 import CalendarTest from  "../Pages/MainPage/CalendarTest";
-import "../CompponetsCSS/Layout.css"
-
+import "../CompponetsCSS/Layout.css";
+import PlantDetail from "../Pages/CatalogPage/PlantDetail";
 export const Layout = () => {
   return (
     <div className="root">
@@ -37,6 +37,7 @@ export const Layout = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/vehicles" element={<Vehicles />} />
           <Route path="/catalog" element={<Catalog />} />
+         <Route path="/catalog/plant/:id" element={<PlantDetail />} />
           <Route path="/inventories" element={<Inventories />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/loginform" element={<LoginForm />} />

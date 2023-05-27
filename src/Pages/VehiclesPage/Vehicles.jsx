@@ -133,6 +133,7 @@ const Vehicles = () => {
       })
       .then((result) => {
         console.log("result= ", result);
+        toast.success("הוספת רכב הושלמה")
         refreshData();
       })
       .catch((error) => {

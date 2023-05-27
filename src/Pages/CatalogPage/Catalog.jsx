@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import ModeIcon from '@mui/icons-material/Mode';
 import "./CatalogCss.css";
 
+
 const imageContext = require.context('../../images', true, /\.(jpg|jpeg|png|gif)$/);
+
 const getImages = () => {
   const images = imageContext.keys().map(imageContext);
   return images;
 };
+
 console.log(imageContext.keys());
+
 const Catalog = () => {
   const plantImages = getImages();
+  const [filter, setFilter] = useState("");
   console.log(plantImages);
   const plants = [
     { id: 1, name: 'במבוק נמוך 50 ליטר',category: 'צמחייה גבוהה', imageUrl: 'https://proj.ruppin.ac.il/cgroup96/prod/build/images/high1.jpeg' },
@@ -33,21 +39,43 @@ const groupedPlants = plants.reduce((acc, plant) => {
 
 return (
   <div className="plant-catalog">
-    {Object.entries(groupedPlants).map(([category, categoryPlants]) => (
-      <div key={category} className={`plant-category ${category}`}>
-        <h2>{category.charAt(0).toUpperCase() + category.slice(1)} </h2>
-        <div className="plants">
-          {categoryPlants.map(plant => (
-            <div key={plant.id} className="plant-card">
-              <img src={plant.imageUrl} alt={plant.name} />
-              <h3>{plant.name}</h3>
-            </div>
-          ))}
+    <input 
+      type="text" 
+      placeholder="Filter plants..."
+      value={filter}
+      onChange={e => setFilter(e.target.value)}
+    />
+    {Object.entries(groupedPlants).map(([category, categoryPlants]) => {
+      const filteredCategoryPlants = categoryPlants.filter(plant => plant.name.toLowerCase().includes(filter.toLowerCase()));
+      return (
+        <div key={category} className={`plant-category ${category}`}>
+          <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+          <div className="plants">
+            {filteredCategoryPlants.map(plant => {
+              const handleClick = () => {
+                localStorage.setItem('plant', JSON.stringify(plant));
+              };
+              return (
+                <Link 
+                  to={{
+                    pathname: `/catalog/plant/${plant.id}`,
+                    state: { plant: plant }
+                  }} 
+                  className="plant-card" 
+                  key={plant.id}
+                  onClick={handleClick} // Add this line
+                >
+                  <img src={plant.imageUrl} alt={plant.name} />
+                  <h3>{plant.name}</h3>
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
 );
 };
+  export default Catalog;
 
-export default Catalog;
