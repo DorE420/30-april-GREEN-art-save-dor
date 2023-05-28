@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ModeIcon from '@mui/icons-material/Mode';
 import "./CatalogCss.css";
-
-
+import PlantDetail from './PlantDetail';
+import { Flipper, Flipped } from 'react-flip-toolkit';
 const imageContext = require.context('../../images', true, /\.(jpg|jpeg|png|gif)$/);
 
 const getImages = () => {
@@ -15,6 +15,9 @@ console.log(imageContext.keys());
 
 const Catalog = () => {
   const plantImages = getImages();
+  const navigate = useNavigate();
+  const [selectedPlant, setSelectedPlant] = useState(null);
+
   const [filter, setFilter] = useState("");
   console.log(plantImages);
   const plants = [
@@ -36,46 +39,92 @@ const groupedPlants = plants.reduce((acc, plant) => {
   acc[plant.category].push(plant);
   return acc;
 }, {});
+// const handleClick = useCallback((plant) => {
+//    localStorage.setItem('plant', JSON.stringify(plant));
+//   navigate(`/catalog/plant/${plant.id}`, { state: { plant } });
+// }, [navigate]);
+
+
+const handleClick = (plant) => {
+  setSelectedPlant(plant);
+};
+
+
+const handleClose = () => {
+  setSelectedPlant(null);
+};
+
 
 return (
-  <div className="plant-catalog">
-    <input 
-      type="text" 
+  <Flipper flipKey={selectedPlant} spring="gentle">
+    <div className="plant-catalog">
+       <input 
+       type="text" 
       placeholder="Filter plants..."
       value={filter}
       onChange={e => setFilter(e.target.value)}
-    />
-    {Object.entries(groupedPlants).map(([category, categoryPlants]) => {
-      const filteredCategoryPlants = categoryPlants.filter(plant => plant.name.toLowerCase().includes(filter.toLowerCase()));
-      return (
-        <div key={category} className={`plant-category ${category}`}>
-          <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
-          <div className="plants">
-            {filteredCategoryPlants.map(plant => {
-              const handleClick = () => {
-                localStorage.setItem('plant', JSON.stringify(plant));
-              };
-              return (
-                <Link 
-                  to={{
-                    pathname: `/catalog/plant/${plant.id}`,
-                    state: { plant: plant }
-                  }} 
-                  className="plant-card" 
-                  key={plant.id}
-                  onClick={handleClick} // Add this line
-                >
-                  <img src={plant.imageUrl} alt={plant.name} />
-                  <h3>{plant.name}</h3>
-                </Link>
-              );
-            })}
+       />
+      {Object.entries(groupedPlants).map(([category, categoryPlants]) => {
+        const filteredCategoryPlants = categoryPlants.filter(plant => plant.name.toLowerCase().includes(filter.toLowerCase()));
+        return (
+          <div key={category} className={`plant-category ${category}`}>
+            <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <div className="plants">
+              {filteredCategoryPlants.map(plant => (
+                <Flipped key={plant.id} flipId={`plant-${plant.id}`}>
+                  <div 
+                    className="plant-card" 
+                    onClick={() => handleClick(plant)}
+                  >
+                    <img src={plant.imageUrl} alt={plant.name} />
+                    <h3>{plant.name}</h3>
+                  </div>
+                </Flipped>
+              ))}
+            </div>
           </div>
-        </div>
-      );
-    })}
-  </div>
+        );
+      })}
+      {selectedPlant && (
+        <Flipped flipId={`plant-${selectedPlant.id}`} inverted>
+          <PlantDetail plant={selectedPlant} onClose={handleClose} />
+        </Flipped>
+      )}
+    </div>
+  </Flipper>
 );
 };
+
+// return (
+//   <div className="plant-catalog">
+//     <input 
+//       type="text" 
+//       placeholder="Filter plants..."
+//       value={filter}
+//       onChange={e => setFilter(e.target.value)}
+//     />
+//     {Object.entries(groupedPlants).map(([category, categoryPlants]) => {
+//       const filteredCategoryPlants = categoryPlants.filter(plant => plant.name.toLowerCase().includes(filter.toLowerCase()));
+//       return (
+//         <div key={category} className={`plant-category ${category}`}>
+//           <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+//           <div className="plants">
+//             {filteredCategoryPlants.map(plant => (
+//               <div 
+//                 className="plant-card" 
+//                 key={plant.id}
+//                 onClick={() => handleClick(plant)}
+//               >
+//                 <img src={plant.imageUrl} alt={plant.name} />
+//                 <h3>{plant.name}</h3>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       );
+//     })}
+//   </div>
+// );
+// };
   export default Catalog;
 

@@ -1,0 +1,29 @@
+.plant-detail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* this is to ensure that the detail view always stays on top */
+  }
+  
+  .plant-detail img {
+    max-width: 20%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .plant-detail h2 {
+    font-size: 2em;
+  }
+  
+  .plant-detail p {
+    font-size: 1.2em;
+  }
+
+  
