@@ -77,6 +77,9 @@ function TeamPopUp({ trigger, setTrigger, addEmployee, children }) {
       employee_PhoneNumber:emplolyeePhone,
       employee_email:emplolyeeEmail,
       employee_gender:emplolyeeGender,
+      employee_position:emplolyeePosition,
+      employee_pw:employeePassword,
+      employee_startDate:employeeBirthDate
     };
     console.log(
       "*************************************************************************"
@@ -207,17 +210,15 @@ function TeamPopUp({ trigger, setTrigger, addEmployee, children }) {
 
             <div className="leftinnerDiv-3">
             <div className="input1">
-                <select className="genderSelect" placeholder="מגדר">
-                  <option value={"זכר"} 
-                          onSelect={setEmplolyeeGenderInput}
-                          id="genderOption">זכר</option>
-                  <option value={"נקבה"} 
-                          onSelect={setEmplolyeeGenderInput}
-                          id="genderOption">נקבה</option>
-                  <option value={"אחר"} 
-                          onSelect={setEmplolyeeGenderInput}
-                          id="genderOption">אחר</option>
-                </select>
+            <select
+             className="genderSelect"
+              placeholder="מגדר"
+            onChange={setEmplolyeeGenderInput}
+            >
+             <option value={"זכר"}>זכר</option>
+            <option value={"נקבה"}>נקבה</option>
+           <option value={"אחר"}>אחר</option>
+          </select>
               </div>
               <Button className="saveNewEmployee" onClick={saveHandler}>
                 שמירה
