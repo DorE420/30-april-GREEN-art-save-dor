@@ -144,17 +144,17 @@ function Inventories() {
 
   const columns = [
     {
-      name: "מחיקת פריט",
+      name: "מחיקה",
       selector: "delete",
-      sortable: false,
-      right: true,
+      center: true,
+      width:"7%",
       cell: (row) => <DeleteIcon onClick={() => deleteInventoryItem(row.itemSerialNum)}>מחיקת פריט</DeleteIcon>,
     },
     {
-      name: "עדכון פריט",
+      name: "עדכון",
       selector: "setting",
-      sortable: true,
-      right: true,
+      center: true,
+      width:"6%",
       cell: (row) => (
         <EditIcon
           onClick={() => {
@@ -171,36 +171,42 @@ function Inventories() {
       selector: "itemPicture",
       sortable: true,
       right: true,
+      width:"14%",
     },
     {
       name:"תיאור פריט",
       selector: "itemDescription",
       sortable: true,
       right: true,
+      width:"30%",
     },
     {
       name: " כמות",
       selector: "itemAmount",
       sortable: true,
       right: true,
+      width:"10%",
     },
     {
-      name: "תז עובד רושם",
+      name: "תז עובד",
       selector: "id",
       sortable: true,
       right: true,
+      width:"10%",
     },
     {
       name: "שם המוצר",
       selector: "itemName",
       sortable: true,
       right: true,
+      width:"15%",
     },
     {
-      name: "מספר סידורי",
+      name: "מסד",
       selector: "itemSerialNum",
       sortable: true,
-      right: true,
+      width:"8%",
+      center: true,
     },];
 
 
@@ -218,26 +224,18 @@ function Inventories() {
       <div id="innerMainInventories">
         <InventoriePopUp trigger={buttonPopUp}
                          setTrigger={setButtonPopUp}
-                         addInventoryItem={(item) => addInventoryItem(item, refreshData)}
-                         />
+                         addInventoryItem={(item) => addInventoryItem(item, refreshData)}/>
+        <UpdateInventoryPopUp
+                         trigger={showEditPopup}
+                         setTrigger={setShowEditPopup}
+                         onUpdateInventoryItem={updateInventoryItem}
+                         currentItem={currentItem}/>
         
         <DataTable columns={columns}
                    data={datainfo}
                    fixedHeader/>
       </div>
 
-      <div id="innerMainInventories">
-      <UpdateInventoryPopUp
-
-      trigger={showEditPopup}
-      setTrigger={setShowEditPopup}
-      onUpdateInventoryItem={updateInventoryItem}
-      currentItem={currentItem}       
-
-      />
-
-
-      </div>
       
 
     </div>
