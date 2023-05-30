@@ -29,7 +29,7 @@ export const Layout = () => {
       <div id="MainBody">
         <Routes>
           {/* <Route path="/" element={<MainPage />} /> */}
-          <Route path="/" element={<CalendarTest />} />
+          <Route path="/" element={<MainPage />} />
           <Route path="/offers" element={<Offers />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/suppliers" element={<Suppliers />} />
@@ -37,7 +37,7 @@ export const Layout = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/vehicles" element={<Vehicles />} />
           <Route path="/catalog" element={<Catalog />} />
-         <Route path="/catalog/plant/:id" element={<PlantDetail />} />
+          <Route path="/catalog/plant/:id" element={<PlantDetail />} />
           <Route path="/inventories" element={<Inventories />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/loginform" element={<LoginForm />} />

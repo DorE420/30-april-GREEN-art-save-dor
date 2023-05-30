@@ -5,13 +5,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import "../CompponetsCSS/Layout.css";
 
 const Header = () => {
   const reloadPage = () => {
     window.location.reload();
   }
   return (
-    <div className="headerContainer">
+    <div id="headerContainer">
         <Link to="/Setting">
         <Avatar src="https://proj.ruppin.ac.il/cgroup96/prod/build/images/PersonImg.jpg" alt="User" className="avatarIcon"/>
         </Link>
