@@ -1,100 +1,113 @@
-import React, {useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./SuppliersCss.css";
 import { TextField } from "@mui/material";
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import DataTable from "react-data-table-component";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import {Menu,MenuHandler,MenuList,MenuItem,Button} from "@material-tailwind/react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Button,
+} from "@material-tailwind/react";
 import NewSuppliers from "./NewSuppliers";
 
+const url = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get";
 
-const url = 'https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get';
-
-const urlPost ='https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/post';
-const urlDelete ='https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/delete';
-const username ='cgroup96';
-const password ='your_password';
+const urlPost = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/post";
+const urlDelete = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/delete";
+const username = "cgroup96";
+const password = "your_password";
 
 const headers = new Headers();
-headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
+headers.append("Authorization", "Basic " + btoa(username + ":" + password));
 
-function addSupplier(supplierItem,refreshData) {
-  fetch(urlPost, {
-    method: 'POST',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json' 
-    },
-    body: JSON.stringify(supplierItem)
-  })
-    .then(res => {
-      console.log('res=', res);
-      console.log('res.status', res.status);
-      console.log('res.ok', res.ok);
-      return res.json()
-    })
-    .then(result => {
-      console.log("add supplier item result = ", result);
-      refreshData();
-    })
-    .catch(error => {
-      console.log("err post = ", error);
-    });
-}
 
-function Suppliers(){
 
+const Suppliers = () => {
   const [dataInfo, setDataInfo] = useState([]);
   const [buttonPopUp, setButtonPopUp] = useState(false);
   const [dataUpdated, setDataUpdated] = useState(false);
   const refreshData = useCallback(() => setDataUpdated(!dataUpdated), [dataUpdated]);
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString)
+      .toLocaleDateString(undefined, options)
+      .split("/")
+      .reverse()
+      .join("-");
+  };
 
-  function deleteSuppliers(supplierID){
+const addSupplier = (supplierItem, refreshData) => {
+  fetch(urlPost, {
+    method: "POST",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(supplierItem),
+  })
+    .then((res) => {
+      console.log("res=", res);
+      console.log("res.status", res.status);
+      console.log("res.ok", res.ok);
+      return res.json();
+    })
+    .then((result) => {
+      console.log("add supplier item result = ", result);
+      refreshData();
+    })
+    .catch((error) => {
+      console.log("err post = ", error);
+    });
+};
+  const deleteSuppliers = (supplierID) => {
     fetch(urlDelete, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
         ...headers,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({businessNumber: supplierID})
+      body: JSON.stringify({ businessNumber: supplierID }),
     })
-      .then(res => {
-        console.log('supplier id is :',supplierID);
-        console.log('res = ', res);
-        console.log('res.status', res.status);
-        console.log('res.ok', res.ok);
-        return res.json()
+      .then((res) => {
+        console.log("supplier id is :", supplierID);
+        console.log("res = ", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
       })
-      .then(result => {
+      .then((result) => {
         console.log("delete supplier result = ", result);
         refreshData();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Err delete=", error);
       });
   }
 
   useEffect(() => {
     fetch(url, {
-      method: 'GET',
-      headers: headers
+      method: "GET",
+      headers: headers,
     })
-      .then(res => {
-        console.log('res = ', res);
-        console.log('res.status', res.status);
-        console.log('res.ok', res.ok);
-        return res.json()
+      .then((res) => {
+        console.log("res = ", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
       })
-      .then(result => {
+      .then((result) => {
         console.log("fetch supplier = ", result);
-        const updatedDatainfo = result.map(st => {
+        const updatedDatainfo = result.map((st) => {
           return {
             supplierNum: st.businessNumber,
-            dateSupplier: st.StartWorkDate,
+            dateSupplier: formatDate(st.StartWorkDate),
             addressSupplier: st.companyAddress,
             supplierEmail: st.companyEmail,
             repFirstNameSupplier: st.repName,
@@ -105,43 +118,42 @@ function Suppliers(){
         console.log(updatedDatainfo);
         setDataInfo(updatedDatainfo);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("err post=", error);
       });
   }, [dataUpdated]);
 
+  const [suppliersType, setSuppliersType] = useState("");
 
-
-  const [suppliersType,setSuppliersType] = useState('');
-
-  const columns =[
+  const columns = [
     {
       name: "מספר ח.פ",
-      selector: "supplierNum",
+      selector: (row) => row.supplierNum,
       sortable: true,
       right: true,
     },
     {
-      name: "תאריך",
-      selector: "dateSupplier",
+      name: "תאריך התקשרות ",
+      selector: (row) => row.dateSupplier,
       sortable: true,
       right: true,
+      
     },
     {
       name: "כתובת ספק",
-      selector: "addressSupplier",
+      selector: (row) => row.addressSupplier,
       sortable: true,
       right: true,
     },
     {
       name: "כתובת מייל",
-      selector: "supplierEmail",
+      selector: (row) => row.supplierEmail,
       sortable: true,
       right: true,
     },
     {
       name: "פרטי איש קשר",
-      selector: "supplierRepresentitvePhone",
+      // selector: "supplierRepresentitvePhone",
       right: true,
       cell: (row) => (
         <div>
@@ -153,59 +165,64 @@ function Suppliers(){
     },
     {
       name: "",
-      selector: "action",
       center: true,
-      width: '10%',
-      cell: (row) => 
-      <>
-        <div>
-          <Menu>
-            <MenuHandler>
-              <MoreVertIcon/>
-            </MenuHandler>
-              <MenuList >
-                <MenuItem><EditIcon/></MenuItem>
-                <MenuItem><DeleteIcon onClick={() => deleteSuppliers(row.businessNumber)}/></MenuItem>
-            </MenuList>
-          </Menu>
-        </div>
-      </>,
-    }, 
+      width: "10%",
+      cell: (row) => (
+        <>
+          <div>
+            <Menu>
+              <MenuHandler>
+                <MoreVertIcon />
+              </MenuHandler>
+              <MenuList>
+                <MenuItem>
+                  <EditIcon />
+                </MenuItem>
+                <MenuItem>
+                  <DeleteIcon
+                    onClick={() => deleteSuppliers(row.businessNumber)}
+                  />
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </div>
+        </>
+      ),
+    },
   ];
 
   const reversedColumns = [...columns].reverse();
 
   return (
     <div id="mainBodySuppliers">
-
       <div id="headerSuppliers">
-        <button className="buttonSuppliers" onClick={() => setButtonPopUp(true)}>הוספת ספק חדש</button>
+        <button
+          className="buttonSuppliers"
+          onClick={() => setButtonPopUp(true)}
+        >
+          הוספת ספק חדש
+        </button>
         <h1>ספקים</h1>
       </div>
 
       <div id="innerMainSuppliers">
-
         <div id="innerRight">
-
           <div className="headerInnerRight">
-            <TextField label="Lin?"
-                      size="small"/>
+            <TextField label="Lin?" size="small" />
             <FormControl size="small">
               <InputLabel>סוג ספק</InputLabel>
-              <Select label="SuppliersType"
-                      value={suppliersType}>
-                        <MenuItem value=""><em> </em></MenuItem>
-                        <MenuItem>ספק פעיל</MenuItem>
-                        <MenuItem>ספק לא פעיל</MenuItem>
+              <Select label="SuppliersType" value={suppliersType}>
+                <MenuItem value="">
+                  <em> </em>
+                </MenuItem>
+                <MenuItem>ספק פעיל</MenuItem>
+                <MenuItem>ספק לא פעיל</MenuItem>
               </Select>
             </FormControl>
           </div>
 
           <div className="mainInnerRight">
-
-            <DataTable columns={reversedColumns}
-                       data={dataInfo}
-                       fixedHeader/>
+            <DataTable columns={reversedColumns} data={dataInfo} fixedHeader />
           </div>
         </div>
 
@@ -214,11 +231,9 @@ function Suppliers(){
             <label>פרטי ספק</label>
           </div>
         </div>
-
       </div>
-
     </div>
   );
-};
+}
 
 export default Suppliers;
