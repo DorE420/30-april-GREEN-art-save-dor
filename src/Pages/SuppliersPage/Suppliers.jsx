@@ -16,9 +16,12 @@ import {
   Button,
 } from "@material-tailwind/react";
 import NewSuppliers from "./NewSuppliers";
+import DeleteAlert from "./DeleteAlert";
+import EditSupplierPopUp from "./EditSupplier";
+// import AddNewSupplier from "./AddNewSupplier";
 
 const url = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get";
-
+const urlUpdate = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/update";
 const urlPost = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/post";
 const urlDelete = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/delete";
 const username = "cgroup96";
@@ -27,13 +30,20 @@ const password = "your_password";
 const headers = new Headers();
 headers.append("Authorization", "Basic " + btoa(username + ":" + password));
 
-
-
 const Suppliers = () => {
   const [dataInfo, setDataInfo] = useState([]);
   const [buttonPopUp, setButtonPopUp] = useState(false);
   const [dataUpdated, setDataUpdated] = useState(false);
-  const refreshData = useCallback(() => setDataUpdated(!dataUpdated), [dataUpdated]);
+  const [supplierID, setSupplierID] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [editPopup, setEditPopup] = useState(false);
+  const [newSupplierPopup, setNewSupplierPopup] = useState(false);
+  const [currentSupplier, setCurrentSupplier] = useState(null);
+
+  const refreshData = useCallback(
+    () => setDataUpdated(!dataUpdated),
+    [dataUpdated]
+  );
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString)
@@ -43,29 +53,52 @@ const Suppliers = () => {
       .join("-");
   };
 
-const addSupplier = (supplierItem, refreshData) => {
-  fetch(urlPost, {
-    method: "POST",
-    headers: {
-      ...headers,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(supplierItem),
-  })
-    .then((res) => {
-      console.log("res=", res);
-      console.log("res.status", res.status);
-      console.log("res.ok", res.ok);
-      return res.json();
+  const updateSupplier = (supplierItem, refreshData) => {
+    fetch(urlUpdate, {
+      method: "PUT",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(supplierItem),
     })
-    .then((result) => {
-      console.log("add supplier item result = ", result);
-      refreshData();
+      .then((res) => {
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
+      .then((result) => {
+        console.log("update supplier result = ", result);
+        refreshData();
+      })
+      .catch((error) => {
+        console.log("err put = ", error);
+      });
+  };
+  const addSupplier = (supplierItem, refreshData) => {
+    fetch(urlPost, {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(supplierItem),
     })
-    .catch((error) => {
-      console.log("err post = ", error);
-    });
-};
+      .then((res) => {
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
+      .then((result) => {
+        console.log("add supplier item result = ", result);
+        refreshData();
+      })
+      .catch((error) => {
+        console.log("err post = ", error);
+      });
+  };
   const deleteSuppliers = (supplierID) => {
     fetch(urlDelete, {
       method: "DELETE",
@@ -89,8 +122,11 @@ const addSupplier = (supplierItem, refreshData) => {
       .catch((error) => {
         console.log("Err delete=", error);
       });
+  };
+  function showDeleteConfirmation(supplierID) {
+    setSupplierID(supplierID);
+    setShowDeleteConfirm(true);
   }
-
   useEffect(() => {
     fetch(url, {
       method: "GET",
@@ -106,13 +142,12 @@ const addSupplier = (supplierItem, refreshData) => {
         console.log("fetch supplier = ", result);
         const updatedDatainfo = result.map((st) => {
           return {
-            supplierNum: st.businessNumber,
-            dateSupplier: formatDate(st.StartWorkDate),
-            addressSupplier: st.companyAddress,
-            supplierEmail: st.companyEmail,
-            repFirstNameSupplier: st.repName,
-            repLastNameSupplier: st.repLastName,
-            repEmailAddressSupplier: st.repEmailAddress,
+            supplierName: st.repName,
+            contactName: st.repLastName,
+            businessNumber: st.businessNumber,
+            startWorkDate: formatDate(st.StartWorkDate),
+            email: st.companyEmail,
+            address: st.companyAddress,
           };
         });
         console.log(updatedDatainfo);
@@ -128,26 +163,25 @@ const addSupplier = (supplierItem, refreshData) => {
   const columns = [
     {
       name: "מספר ח.פ",
-      selector: (row) => row.supplierNum,
+      selector: (row) => row.businessNumber,
       sortable: true,
       right: true,
     },
     {
       name: "תאריך התקשרות ",
-      selector: (row) => row.dateSupplier,
+      selector: (row) => row.startWorkDate,
       sortable: true,
       right: true,
-      
     },
     {
       name: "כתובת ספק",
-      selector: (row) => row.addressSupplier,
+      selector: (row) => row.address,
       sortable: true,
       right: true,
     },
     {
       name: "כתובת מייל",
-      selector: (row) => row.supplierEmail,
+      selector: (row) => row.email,
       sortable: true,
       right: true,
     },
@@ -157,9 +191,9 @@ const addSupplier = (supplierItem, refreshData) => {
       right: true,
       cell: (row) => (
         <div>
-          <div>{row.repFirstNameSupplier}</div>
-          <div>{row.repLastNameSupplier}</div>
-          <div>{row.repEmailAddressSupplier}</div>
+          <div>{row.contactName}</div>
+          <div>{row.supplierName}</div>
+          <div>{row.email}</div>
         </div>
       ),
     },
@@ -176,11 +210,16 @@ const addSupplier = (supplierItem, refreshData) => {
               </MenuHandler>
               <MenuList>
                 <MenuItem>
-                  <EditIcon />
+                  <EditIcon
+                    onClick={() => {
+                      setCurrentSupplier(row);
+                      setEditPopup(true);
+                    }}
+                  />
                 </MenuItem>
                 <MenuItem>
                   <DeleteIcon
-                    onClick={() => deleteSuppliers(row.businessNumber)}
+                    onClick={() => showDeleteConfirmation(row.supplierNum)}
                   />
                 </MenuItem>
               </MenuList>
@@ -220,20 +259,36 @@ const addSupplier = (supplierItem, refreshData) => {
               </Select>
             </FormControl>
           </div>
-
+          <div>
+            <DeleteAlert
+              show={showDeleteConfirm}
+              onClose={() => setShowDeleteConfirm(false)}
+              onDelete={() => {
+                deleteSuppliers(supplierID);
+                setShowDeleteConfirm(false);
+              }}
+            />
+            <EditSupplierPopUp
+              trigger={editPopup}
+              setTrigger={setEditPopup}
+              updateSupplier={(supplier, refreshData) => updateSupplier(supplier, refreshData) }
+              // updateSupplier={updateSupplier}
+              supplier={currentSupplier}
+              refreshData={refreshData}
+            />
+            {/* <AddNewSupplier
+              trigger={newSupplierPopup}
+              setTrigger={setNewSupplierPopup}
+              addSupplier={addSupplier}
+            /> */}
+          </div>
           <div className="mainInnerRight">
             <DataTable columns={reversedColumns} data={dataInfo} fixedHeader />
-          </div>
-        </div>
-
-        <div id="innerLeft">
-          <div className="headerInnerLeft">
-            <label>פרטי ספק</label>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Suppliers;

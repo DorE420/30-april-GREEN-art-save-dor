@@ -39,19 +39,19 @@
 }
 #innerRight{
     background-color: white;
-    width: 70%;
+    width: 95%;
     height: 95%;
     border-radius: 15px;
-    overflow: scroll;
+    /* overflow: scroll; */
 }
-#innerLeft{
+/* #innerLeft{
     background-color:white;
     width: 25%;
     height: 95%;
     border-radius: 15px;
     overflow: scroll;
-}
-.headerInnerLeft{
+} */
+/* .headerInnerLeft{
     height: 10%;
     border-bottom: 1px solid #5391659f;
     width: 100%;
@@ -60,7 +60,7 @@
     justify-content:right;
     align-items:center;
     padding: 0px 15px 0px 0px;
-}
+} */
 .headerInnerRight{
     height: 10%;
     border-bottom: 1px solid #5391659f;
@@ -72,7 +72,7 @@
     align-items: center;
     padding: 0px 15px 0px 15px;
 }
-.mainInnerRight{
+/* .mainInnerRight{
     height: 90%;
     width: 100%;
-}
+} */
