@@ -48,7 +48,7 @@ const handleInputChange = (event) => {
       key: editForm.licenseNum,
     };
     console.log( newItemInput);
-     updateVehiclesItem(newItemInput); //-- this function casuing the popup not to work
+     updateVehiclesItem(newItemInput); 
     closeForm();
   }
   const closeForm = () => {

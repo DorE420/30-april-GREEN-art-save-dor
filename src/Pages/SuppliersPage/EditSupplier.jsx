@@ -3,15 +3,19 @@ import Button from "react-bootstrap/Button";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
 const EditSupplierPopUp = ({
   trigger,
   setTrigger,
   updateSupplier,
   supplier,
-  refreshData,
 }) => {
-  const [editForm, setEditForm] = useState({});
+  const [editForm, setEditForm] = useState({
+    supplierName: supplier ? supplier.supplierName : "",
+    contactName: supplier ? supplier.contactName : "",
+    businessNumber: supplier ? supplier.businessNumber : "",
+    email: supplier ? supplier.email : "",
+    address: supplier ? supplier.address : "",
+  });
 
   useEffect(() => {
     if (supplier) {
@@ -19,7 +23,6 @@ const EditSupplierPopUp = ({
         supplierName: supplier.supplierName,
         contactName: supplier.contactName,
         businessNumber: supplier.businessNumber,
-        startWorkDate: supplier.startWorkDate,
         email: supplier.email,
         address: supplier.address,
       });
@@ -32,15 +35,25 @@ const EditSupplierPopUp = ({
       [event.target.name]: event.target.value,
     });
   };
+
   const saveHandler = (e) => {
     e.preventDefault();
-    updateSupplier(editForm, refreshData);
+    const transformedData = {
+      repName: editForm.supplierName,
+      repLastName: editForm.contactName,
+      businessNumber: editForm.businessNumber,
+      companyEmail: editForm.email,
+      companyAddress: editForm.address,
+    };
+    updateSupplier(transformedData);
+    console.log(transformedData);
     closeForm();
   };
+
   const closeForm = () => {
-    console.log("close this form - Edit Supplier");
     setTrigger(false);
   };
+
   return trigger ? (
     <>
       <div id="vehiclesPopUp">
@@ -52,7 +65,7 @@ const EditSupplierPopUp = ({
           <div id="innerPopUp">
             <div className="login__control">
               <div className="login__control">
-                <label> שם ספק</label>
+                <label>שם ספק</label>
                 <input
                   type="text"
                   name="supplierName"
@@ -61,7 +74,7 @@ const EditSupplierPopUp = ({
                 />
               </div>
               <div className="login__control">
-                <label> פרטי איש קשר</label>
+                <label>שם משפחה של איש הקשר</label>
                 <input
                   type="text"
                   name="contactName"
@@ -69,9 +82,8 @@ const EditSupplierPopUp = ({
                   onChange={handleInputChange}
                 />
               </div>
-
               <div className="login__control">
-                <label> ח"פ</label>
+                <label>ח"פ</label>
                 <input
                   type="text"
                   name="businessNumber"
@@ -79,27 +91,17 @@ const EditSupplierPopUp = ({
                   onChange={handleInputChange}
                 />
               </div>
-              <br />
               <div className="login__control">
-                <label>תאריך התקשרות </label>
-                <span
-                  style={{ fontWeight: "bold", textDecoration: "underline" }}
-                >
-                  {editForm.startWorkDate}
-                </span>
-              </div>
-              <br />
-              <div className="login__control">
-                <label> Email </label>
+                <label>אימייל חברה</label>
                 <input
-                  type="text"
+                  type="email"
                   name="email"
                   value={editForm.email}
                   onChange={handleInputChange}
                 />
               </div>
               <div className="login__control">
-                <label> כתובת </label>
+                <label>כתובת חברה</label>
                 <input
                   type="text"
                   name="address"
@@ -107,10 +109,8 @@ const EditSupplierPopUp = ({
                   onChange={handleInputChange}
                 />
               </div>
-
               <div className="inputsInfo">
                 <Button className="login_Button" onClick={saveHandler}>
-                  {" "}
                   שמירת עדכונים
                 </Button>
               </div>
@@ -123,4 +123,5 @@ const EditSupplierPopUp = ({
     ""
   );
 };
+
 export default EditSupplierPopUp;

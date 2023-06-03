@@ -8,17 +8,11 @@ import DataTable from "react-data-table-component";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import {
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Button,
-} from "@material-tailwind/react";
+import { Menu, MenuHandler, MenuList, MenuItem } from "@material-tailwind/react";
 import NewSuppliers from "./NewSuppliers";
 import DeleteAlert from "./DeleteAlert";
 import EditSupplierPopUp from "./EditSupplier";
-// import AddNewSupplier from "./AddNewSupplier";
+import { toast } from "react-toastify";
 
 const url = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get";
 const urlUpdate = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/update";
@@ -37,8 +31,8 @@ const Suppliers = () => {
   const [supplierID, setSupplierID] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [editPopup, setEditPopup] = useState(false);
-  const [newSupplierPopup, setNewSupplierPopup] = useState(false);
   const [currentSupplier, setCurrentSupplier] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   const refreshData = useCallback(
     () => setDataUpdated(!dataUpdated),
@@ -53,29 +47,30 @@ const Suppliers = () => {
       .join("-");
   };
 
-  const updateSupplier = (supplierItem, refreshData) => {
-    fetch(urlUpdate, {
-      method: "PUT",
-      headers: {
-        ...headers,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(supplierItem),
+const updateSupplier = (supplierItem) => {
+  fetch(urlUpdate, {
+    method: "PUT",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(supplierItem),
+  })
+    .then((res) => {
+      console.log("res=", res);
+      console.log("res.status", res.status);
+      console.log("res.ok", res.ok);
+      return res.json();
     })
-      .then((res) => {
-        console.log("res=", res);
-        console.log("res.status", res.status);
-        console.log("res.ok", res.ok);
-        return res.json();
-      })
-      .then((result) => {
-        console.log("update supplier result = ", result);
-        refreshData();
-      })
-      .catch((error) => {
-        console.log("err put = ", error);
-      });
-  };
+    .then((result) => {
+      console.log("update supplier result = ", result);
+      refreshData();
+    })
+    .catch((error) => {
+      console.log("err put = ", error);
+    });
+};
+
   const addSupplier = (supplierItem, refreshData) => {
     fetch(urlPost, {
       method: "POST",
@@ -93,6 +88,7 @@ const Suppliers = () => {
       })
       .then((result) => {
         console.log("add supplier item result = ", result);
+        toast.success("הוספת ספק הושלמה");
         refreshData();
       })
       .catch((error) => {
@@ -232,6 +228,16 @@ const Suppliers = () => {
 
   const reversedColumns = [...columns].reverse();
 
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+    const filteredData = dataInfo.filter(
+      (item) =>
+        item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.contactName.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.businessNumber.toLowerCase().includes(searchText.toLowerCase())
+      //... add other fields if needed
+    );
   return (
     <div id="mainBodySuppliers">
       <div id="headerSuppliers">
@@ -247,17 +253,12 @@ const Suppliers = () => {
       <div id="innerMainSuppliers">
         <div id="innerRight">
           <div className="headerInnerRight">
-            <TextField label="Lin?" size="small" />
-            <FormControl size="small">
-              <InputLabel>סוג ספק</InputLabel>
-              <Select label="SuppliersType" value={suppliersType}>
-                <MenuItem value="">
-                  <em> </em>
-                </MenuItem>
-                <MenuItem>ספק פעיל</MenuItem>
-                <MenuItem>ספק לא פעיל</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              label="Lin?"
+              size="small"
+              value={searchText}
+              onChange={handleSearch}
+            />
           </div>
           <div>
             <DeleteAlert
@@ -271,19 +272,18 @@ const Suppliers = () => {
             <EditSupplierPopUp
               trigger={editPopup}
               setTrigger={setEditPopup}
-              updateSupplier={(supplier, refreshData) => updateSupplier(supplier, refreshData) }
-              // updateSupplier={updateSupplier}
+              updateSupplier={(supplierItem) => updateSupplier(supplierItem)}
               supplier={currentSupplier}
               refreshData={refreshData}
             />
-            {/* <AddNewSupplier
-              trigger={newSupplierPopup}
-              setTrigger={setNewSupplierPopup}
-              addSupplier={addSupplier}
-            /> */}
+            <NewSuppliers
+              trigger={buttonPopUp}
+              setTrigger={setButtonPopUp}
+              addSupplier={(item) => addSupplier(item, refreshData)}
+            />
           </div>
           <div className="mainInnerRight">
-            <DataTable columns={reversedColumns} data={dataInfo} fixedHeader />
+            <DataTable columns={reversedColumns} data={dataInfo} fixedHeader  />
           </div>
         </div>
       </div>
