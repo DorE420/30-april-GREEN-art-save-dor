@@ -191,19 +191,13 @@ function MainPage (){
       info.el.querySelector(".fc-title").textContent = info.event.title;
     },
   };
-
   const eventClickUpdate = (info) => {
     const event = info.event;
     console.log('Clicked event:', event);
   };
 
 
-
-
-
-
   const calendarRef = useRef(null);
-
   const handleListButtonClick = () => {
     if (calendarRef.current) {
       calendarRef.current.getApi().changeView("listWeek");

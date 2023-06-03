@@ -1,222 +1,292 @@
-import React, {useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./SuppliersCss.css";
 import { TextField } from "@mui/material";
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import DataTable from "react-data-table-component";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import {Menu,MenuHandler,MenuList,MenuItem,Button} from "@material-tailwind/react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Menu, MenuHandler, MenuList, MenuItem } from "@material-tailwind/react";
 import NewSuppliers from "./NewSuppliers";
+import DeleteAlert from "./DeleteAlert";
+import EditSupplierPopUp from "./EditSupplier";
+import { toast } from "react-toastify";
 
-
-const url = 'https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get';
-
-const urlPost ='https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/post';
-const urlDelete ='https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/delete';
-const username ='cgroup96';
-const password ='your_password';
+const url = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/get";
+const urlUpdate = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/update";
+const urlPost = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/post";
+const urlDelete = "https://proj.ruppin.ac.il/cgroup96/prod/api/supplier/delete";
+const username = "cgroup96";
+const password = "your_password";
 
 const headers = new Headers();
-headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
+headers.append("Authorization", "Basic " + btoa(username + ":" + password));
 
-function addSupplier(supplierItem,refreshData) {
-  fetch(urlPost, {
-    method: 'POST',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json' 
-    },
-    body: JSON.stringify(supplierItem)
-  })
-    .then(res => {
-      console.log('res=', res);
-      console.log('res.status', res.status);
-      console.log('res.ok', res.ok);
-      return res.json()
-    })
-    .then(result => {
-      console.log("add supplier item result = ", result);
-      refreshData();
-    })
-    .catch(error => {
-      console.log("err post = ", error);
-    });
-}
-
-function Suppliers(){
-
+const Suppliers = () => {
   const [dataInfo, setDataInfo] = useState([]);
   const [buttonPopUp, setButtonPopUp] = useState(false);
   const [dataUpdated, setDataUpdated] = useState(false);
-  const refreshData = useCallback(() => setDataUpdated(!dataUpdated), [dataUpdated]);
+  const [supplierID, setSupplierID] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [editPopup, setEditPopup] = useState(false);
+  const [currentSupplier, setCurrentSupplier] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
-  function deleteSuppliers(supplierID){
-    fetch(urlDelete, {
-      method: 'DELETE',
+  const refreshData = useCallback(
+    () => setDataUpdated(!dataUpdated),
+    [dataUpdated]
+  );
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString)
+      .toLocaleDateString(undefined, options)
+      .split("/")
+      .reverse()
+      .join("-");
+  };
+
+const updateSupplier = (supplierItem) => {
+  fetch(urlUpdate, {
+    method: "PUT",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(supplierItem),
+  })
+    .then((res) => {
+      console.log("res=", res);
+      console.log("res.status", res.status);
+      console.log("res.ok", res.ok);
+      return res.json();
+    })
+    .then((result) => {
+      console.log("update supplier result = ", result);
+      refreshData();
+    })
+    .catch((error) => {
+      console.log("err put = ", error);
+    });
+};
+
+  const addSupplier = (supplierItem, refreshData) => {
+    fetch(urlPost, {
+      method: "POST",
       headers: {
         ...headers,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({businessNumber: supplierID})
+      body: JSON.stringify(supplierItem),
     })
-      .then(res => {
-        console.log('supplier id is :',supplierID);
-        console.log('res = ', res);
-        console.log('res.status', res.status);
-        console.log('res.ok', res.ok);
-        return res.json()
+      .then((res) => {
+        console.log("res=", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
       })
-      .then(result => {
+      .then((result) => {
+        console.log("add supplier item result = ", result);
+        toast.success("הוספת ספק הושלמה");
+        refreshData();
+      })
+      .catch((error) => {
+        console.log("err post = ", error);
+      });
+  };
+  const deleteSuppliers = (supplierID) => {
+    fetch(urlDelete, {
+      method: "DELETE",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ businessNumber: supplierID }),
+    })
+      .then((res) => {
+        console.log("supplier id is :", supplierID);
+        console.log("res = ", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
+      })
+      .then((result) => {
         console.log("delete supplier result = ", result);
         refreshData();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Err delete=", error);
       });
+  };
+  function showDeleteConfirmation(supplierID) {
+    setSupplierID(supplierID);
+    setShowDeleteConfirm(true);
   }
-
   useEffect(() => {
     fetch(url, {
-      method: 'GET',
-      headers: headers
+      method: "GET",
+      headers: headers,
     })
-      .then(res => {
-        console.log('res = ', res);
-        console.log('res.status', res.status);
-        console.log('res.ok', res.ok);
-        return res.json()
+      .then((res) => {
+        console.log("res = ", res);
+        console.log("res.status", res.status);
+        console.log("res.ok", res.ok);
+        return res.json();
       })
-      .then(result => {
+      .then((result) => {
         console.log("fetch supplier = ", result);
-        const updatedDatainfo = result.map(st => {
+        const updatedDatainfo = result.map((st) => {
           return {
-            supplierNum: st.businessNumber,
-            dateSupplier: st.StartWorkDate,
-            addressSupplier: st.companyAddress,
-            supplierEmail: st.companyEmail,
-            repFirstNameSupplier: st.repName,
-            repLastNameSupplier: st.repLastName,
-            repEmailAddressSupplier: st.repEmailAddress,
+            supplierName: st.repName,
+            contactName: st.repLastName,
+            businessNumber: st.businessNumber,
+            startWorkDate: formatDate(st.StartWorkDate),
+            email: st.companyEmail,
+            address: st.companyAddress,
           };
         });
         console.log(updatedDatainfo);
         setDataInfo(updatedDatainfo);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("err post=", error);
       });
   }, [dataUpdated]);
 
+  const [suppliersType, setSuppliersType] = useState("");
 
-
-  const [suppliersType,setSuppliersType] = useState('');
-
-  const columns =[
+  const columns = [
     {
       name: "מספר ח.פ",
-      selector: "supplierNum",
+      selector: (row) => row.businessNumber,
       sortable: true,
       right: true,
     },
     {
-      name: "תאריך",
-      selector: "dateSupplier",
+      name: "תאריך התקשרות ",
+      selector: (row) => row.startWorkDate,
       sortable: true,
       right: true,
     },
     {
       name: "כתובת ספק",
-      selector: "addressSupplier",
+      selector: (row) => row.address,
       sortable: true,
       right: true,
     },
     {
       name: "כתובת מייל",
-      selector: "supplierEmail",
+      selector: (row) => row.email,
       sortable: true,
       right: true,
     },
     {
       name: "פרטי איש קשר",
-      selector: "supplierRepresentitvePhone",
+      // selector: "supplierRepresentitvePhone",
       right: true,
       cell: (row) => (
         <div>
-          <div>{row.repFirstNameSupplier}</div>
-          <div>{row.repLastNameSupplier}</div>
-          <div>{row.repEmailAddressSupplier}</div>
+          <div>{row.contactName}</div>
+          <div>{row.supplierName}</div>
+          <div>{row.email}</div>
         </div>
       ),
     },
     {
       name: "",
-      selector: "action",
       center: true,
-      width: '10%',
-      cell: (row) => 
-      <>
-        <div>
-          <Menu>
-            <MenuHandler>
-              <MoreVertIcon/>
-            </MenuHandler>
-              <MenuList >
-                <MenuItem><EditIcon/></MenuItem>
-                <MenuItem><DeleteIcon onClick={() => deleteSuppliers(row.businessNumber)}/></MenuItem>
-            </MenuList>
-          </Menu>
-        </div>
-      </>,
-    }, 
+      width: "10%",
+      cell: (row) => (
+        <>
+          <div>
+            <Menu>
+              <MenuHandler>
+                <MoreVertIcon />
+              </MenuHandler>
+              <MenuList>
+                <MenuItem>
+                  <EditIcon
+                    onClick={() => {
+                      setCurrentSupplier(row);
+                      setEditPopup(true);
+                    }}
+                  />
+                </MenuItem>
+                <MenuItem>
+                  <DeleteIcon
+                    onClick={() => showDeleteConfirmation(row.supplierNum)}
+                  />
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </div>
+        </>
+      ),
+    },
   ];
 
   const reversedColumns = [...columns].reverse();
 
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+    const filteredData = dataInfo.filter(
+      (item) =>
+        item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.contactName.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.businessNumber.toLowerCase().includes(searchText.toLowerCase())
+      //... add other fields if needed
+    );
   return (
     <div id="mainBodySuppliers">
-
       <div id="headerSuppliers">
-        <button className="buttonSuppliers" onClick={() => setButtonPopUp(true)}>הוספת ספק חדש</button>
+        <button
+          className="buttonSuppliers"
+          onClick={() => setButtonPopUp(true)}
+        >
+          הוספת ספק חדש
+        </button>
         <h1>ספקים</h1>
       </div>
 
       <div id="innerMainSuppliers">
-
         <div id="innerRight">
-
           <div className="headerInnerRight">
-            <TextField label="Lin?"
-                      size="small"/>
-            <FormControl size="small">
-              <InputLabel>סוג ספק</InputLabel>
-              <Select label="SuppliersType"
-                      value={suppliersType}>
-                        <MenuItem value=""><em> </em></MenuItem>
-                        <MenuItem>ספק פעיל</MenuItem>
-                        <MenuItem>ספק לא פעיל</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              label="Lin?"
+              size="small"
+              value={searchText}
+              onChange={handleSearch}
+            />
           </div>
-
+          <div>
+            <DeleteAlert
+              show={showDeleteConfirm}
+              onClose={() => setShowDeleteConfirm(false)}
+              onDelete={() => {
+                deleteSuppliers(supplierID);
+                setShowDeleteConfirm(false);
+              }}
+            />
+            <EditSupplierPopUp
+              trigger={editPopup}
+              setTrigger={setEditPopup}
+              updateSupplier={(supplierItem) => updateSupplier(supplierItem)}
+              supplier={currentSupplier}
+              refreshData={refreshData}
+            />
+            <NewSuppliers
+              trigger={buttonPopUp}
+              setTrigger={setButtonPopUp}
+              addSupplier={(item) => addSupplier(item, refreshData)}
+            />
+          </div>
           <div className="mainInnerRight">
-
-            <DataTable columns={reversedColumns}
-                       data={dataInfo}
-                       fixedHeader/>
+            <DataTable columns={reversedColumns} data={dataInfo} fixedHeader  />
           </div>
         </div>
-
-        <div id="innerLeft">
-          <div className="headerInnerLeft">
-            <label>פרטי ספק</label>
-          </div>
-        </div>
-
       </div>
-
     </div>
   );
 };

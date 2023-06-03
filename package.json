@@ -22,13 +22,19 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
+    "date-fns": "^2.30.0",
     "moment": "^2.29.4",
     "primereact": "^9.3.0",
     "react": "^18.2.0",
     "react-big-calendar": "^1.6.9",
     "react-bootstrap": "^2.7.4",
     "react-data-table-component": "^7.5.3",
+<<<<<<< HEAD
     "react-datepicker": "^4.11.0",
+    "react-datetime-picker": "^5.2.0",
+=======
+    "react-datepicker": "^4.12.0",
+>>>>>>> a61de8cb285e0229f1781cfa19025460a8982214
     "react-dom": "^18.2.0",
     "react-flip-toolkit": "^7.1.0",
     "react-pro-sidebar": "^1.0.0",

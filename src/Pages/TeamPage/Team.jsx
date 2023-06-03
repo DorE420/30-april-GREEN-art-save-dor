@@ -9,7 +9,7 @@ import {Menu,MenuHandler,MenuList,MenuItem} from "@material-tailwind/react";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
+import EditEmployee from "./EditEmployee";
 /*
 משימות שיש לי עוד לעשות בעמוד עובדים :
 1. לסדר את התפריט הנפתח של עדכון/מחיקה
@@ -64,28 +64,10 @@ function Team() {
   const [editEmployeePopUp,setEditEmployeePopUp] = useState(false);
   const [currentEmployee,setCurrentEmployee] = useState({});
   const [filterEmployeeData,setFilterEmployeeData] = useState("");
-  const [openSetting,setOpenSetting] = useState(false);
+  const [openSetting,setOpenSetting] = useState(null);
   const refreshData = useCallback(() => setEmployeeDataUpdate(!employeeDataUpdate),[employeeDataUpdate]);
-
-  /*useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://proj.ruppin.ac.il/cgroup96/prod/api/employee/get', {
-          headers: {
-            'Authorization': 'Basic ' + btoa('username:password')
-          }
-          })
-        const data = await response.json();
-        setEmployees(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching employees data: ", error);
-      }
-    };
-
-    fetchData();
-  }, []);*/
-
+  const [currentRow, setCurrentRow] = useState(null);
+  const [updatePopUpVisible, setUpdatePopUpVisible] = useState(false);
 
   function deleteEmployee(employeeId){
     fetch(urlDelete, {
@@ -133,6 +115,7 @@ function Team() {
           employeePhone: st.employee_PhoneNumber,
           employeeEmail: st.employee_email,
           employeeGender: st.employee_gender,
+          employeePosition:st.employee_position
         };
       });
       console.log(updatedDatainfo);
@@ -212,13 +195,30 @@ function Team() {
       center: true,
       width: "5%", 
       cell: (row) => 
-        (<div>
-          <MoreVertIcon onClick={() => setOpenSetting((prev) => !prev )}/>
-        </div>),
+      (
+        <div>
+            <MoreVertIcon onClick={() => setOpenSetting((prevOpenSetting) => prevOpenSetting !== row.employeeId ? row.employeeId : null)}/>
+            {openSetting === row.employeeId && (
+                <div className="popUpSettingEmployee">
+                    <ul>
+                        <li className="liDeleteIcon">
+                            <DeleteIcon onClick={() => deleteEmployee(row.employeeId)}/>
+                        </li>
+                        <li className="liUpdateIcon">
+                            <EditIcon onClick={() => {
+                                setCurrentEmployee(row); // Set the current employee to be edited
+                                setEditEmployeePopUp(true); // Open the EditEmployee pop-up
+                            }}/>
+                        </li>
+                    </ul>
+                </div>
+            )}
+        </div>
+      ),
     },
   ];
   const reversedColumnsEmployee = [...columnsEmployee].reverse();
-
+  
   const filteredData = filterEmployeeData ? employeeDataInfo.filter((item) =>
   item.employeeFirstname.toLowerCase().includes(filterEmployeeData.toLowerCase())
 ) : employeeDataInfo;
@@ -237,8 +237,15 @@ function Team() {
       <div id="innerMainTeam">
         <TeamPopUp trigger={employeePopUp} 
                    setTrigger={setEmployeePopUp}
-                   addEmployee={(item) => addEmployee(item,refreshData)} />
-
+                   addEmployee={(item) => addEmployee(item,refreshData)}
+                  
+                   />
+<EditEmployee
+                trigger={editEmployeePopUp}
+                setTrigger={setEditEmployeePopUp}
+                currentEmployee={currentEmployee}
+                refreshData={refreshData}
+            />
         <div className="JobInfo">
           <div className="headerInnerInfo">
 
@@ -274,7 +281,9 @@ function Team() {
                       {openSetting === true ? (
             <div className="popUpSettingEmployee">
               <ul>
-                <li className="liDeleteIcon"><DeleteIcon/></li>
+                <li className="liDeleteIcon">
+                <DeleteIcon />
+                </li>
                 <li className="liUpdateIcon"><EditIcon/></li>
               </ul>
             </div>

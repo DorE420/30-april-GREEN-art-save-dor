@@ -5,7 +5,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
 import "./MainPageCss.css";
-// import DatePicker from 'react-datepicker';
+import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
@@ -199,8 +199,6 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
     },
   ]
 
-
-  
   const resetTextHandler = () => {
     setEventName("");
     setEventAddress("");
@@ -231,13 +229,9 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
       console.log(itemListEvent);
     }
   };
-
   useEffect(() => {
     console.log(selectedCustomer);
   }, [selectedCustomer]);
-
-
-
 
 
   const handleStep1Next = () => {
@@ -259,7 +253,6 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
     setStep2Data(step2Data);
     setCurrentStep(prevStep => prevStep + 1);
   };
-
   const handleStep3Submit = () => {
 
     setLastEventSerial(lastEventSerial => lastEventSerial + 1);
@@ -325,13 +318,17 @@ const NewCalendarEvent = ({trigger, setTrigger, addEvent, date, onSave, children
                   </div>
 
                   
-                  <div className="divInfoInput">
+                  {/*<div className="divInfoInput">
                     <input
                       id="time-input"
                       type="time"
                       value={eventStartDate}
                       onChange={eventStartDateInput}/>
                       <span>זמן תחילת אירוע</span>
+                  </div>*/}
+                  <div >
+                    <DatePicker controls={["datetime"]}
+                                select="range"/>
                   </div>
 
                   <div className="divInfoInput">
