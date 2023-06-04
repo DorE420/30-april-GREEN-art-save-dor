@@ -1,9 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "./SuppliersCss.css";
 import { TextField } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import DataTable from "react-data-table-component";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -154,8 +151,6 @@ const updateSupplier = (supplierItem) => {
       });
   }, [dataUpdated]);
 
-  const [suppliersType, setSuppliersType] = useState("");
-
   const columns = [
     {
       name: "מספר ח.פ",
@@ -231,13 +226,19 @@ const updateSupplier = (supplierItem) => {
   const handleSearch = (e) => {
     setSearchText(e.target.value);
   };
-    const filteredData = dataInfo.filter(
-      (item) =>
-        item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.contactName.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.businessNumber.toLowerCase().includes(searchText.toLowerCase())
-      //... add other fields if needed
-    );
+
+const filteredData = dataInfo.filter(
+  (item) =>
+    item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.contactName.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.startWorkDate.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.address.toLowerCase().includes(searchText.toLowerCase()) ||
+    (item.businessNumber && item.businessNumber.toString().includes(searchText))
+);
+
+
+
   return (
     <div id="mainBodySuppliers">
       <div id="headerSuppliers">
@@ -254,7 +255,7 @@ const updateSupplier = (supplierItem) => {
         <div id="innerRight">
           <div className="headerInnerRight">
             <TextField
-              label="Lin?"
+              label="פרטי הספק המבוקש"
               size="small"
               value={searchText}
               onChange={handleSearch}
@@ -283,7 +284,11 @@ const updateSupplier = (supplierItem) => {
             />
           </div>
           <div className="mainInnerRight">
-            <DataTable columns={reversedColumns} data={dataInfo} fixedHeader  />
+            <DataTable
+              columns={reversedColumns}
+              data={filteredData}
+              fixedHeader
+            />
           </div>
         </div>
       </div>
